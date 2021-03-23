@@ -37,7 +37,7 @@ export class HttpClient {
     const { baseURL } = this._httpConfig;
     let headers = config?.headers || {};
 
-    if (authHeader !== '' && isAuthenticated) {
+    if (authHeader && isAuthenticated) {
       headers = {
         ...headers,
         Authorization: authHeader,
