@@ -1,19 +1,7 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
 import queryString from 'query-string';
-
-export class HttpClientErrorModel extends Error {
-  constructor(public message: string, public code: string) {
-    super(message);
-  }
-}
-type HttpClientConfig = Partial<AxiosRequestConfig>;
-type HttpClientOtherConfig = Omit<AxiosRequestConfig, 'baseURL' | 'paramsSerializer'>;
-type HttpClientResponse<T = any> = Partial<AxiosResponse<T>>;
-type HttpError<T = any> = Partial<AxiosError<T>>;
-
-type HttpClientPayload<T = unknown> = {
-  [P in keyof T]?: T[P];
-};
+import { HttpClientErrorModel } from './model';
+import { HttpClientConfig, HttpClientOtherConfig, HttpClientPayload, HttpClientResponse, HttpError } from './type';
 
 export class HttpClient {
   private static _httpConfig: HttpClientConfig;
