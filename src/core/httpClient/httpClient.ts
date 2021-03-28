@@ -1,19 +1,17 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import { IAuthenticator } from '../auth/types';
-import { HttpClientErrorModel } from './model';
+import { HttpClientErrorModel } from '../models/httpClientError.model';
 import {
   HttpClientConfig,
   HttpClientOtherConfig,
   HttpClientPayload,
   HttpClientResponse,
-  HttpError,
+  HttpClientError,
   HttpInterceptor,
-} from './types';
+} from '../types/httpClient.type';
 
 export class HttpClient {
   private static _httpConfig: HttpClientConfig;
-  private static _authenticator: IAuthenticator;
 
   static set httpConfig(config: HttpClientConfig) {
     this._httpConfig = config;
@@ -21,10 +19,6 @@ export class HttpClient {
 
   static get httpConfig(): HttpClientConfig {
     return this._httpConfig;
-  }
-
-  static set authenticator(authenticator: IAuthenticator) {
-    this._authenticator = authenticator;
   }
 
   static get interceptors(): HttpInterceptor {
@@ -35,15 +29,17 @@ export class HttpClient {
   }
 
   static async configs(config: HttpClientOtherConfig, isAuthenticated = true): Promise<HttpClientConfig> {
-    const paramsSerializer = (params: any) => queryString.stringify(params);
-
     const headers = isAuthenticated ? this.getConfigHeader(config) : {};
 
-    return { ...(this._httpConfig || {}), headers, paramsSerializer };
+    return {
+      ...(this._httpConfig || {}),
+      headers,
+      paramsSerializer: (params: any) => queryString.stringify(params),
+    };
   }
 
   private static getConfigHeader(config: HttpClientConfig): any {
-    const authHeader = this._authenticator.getAuthHeader();
+    const authHeader = this._httpConfig?.authConfig?.authInstance?.getAuthHeader();
     let headers = config?.headers || {};
 
     if (authHeader) {
@@ -64,7 +60,7 @@ export class HttpClient {
     return response.data as T;
   }
 
-  private static error(err: HttpError): Error {
+  private static error(err: HttpClientError): Error {
     const { code: errorCode = 'unknown' } = err.response?.data;
     const { message } = err.response?.data || err;
     return new HttpClientErrorModel(message, errorCode);

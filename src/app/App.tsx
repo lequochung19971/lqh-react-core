@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../assets/styles/styles.scss';
+import { HttpClient } from '../core/httpClient/httpClient';
+import http from '../http/http';
 
-function App() {
+const App: React.FunctionComponent = () => {
+  useEffect(() => {
+    console.log(HttpClient.httpConfig.authConfig)
+  }, [])
+
+  const onClick = () => {
+    http.Employee.getEmployees();
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={onClick}>Click</button>
     </div>
   );
 }

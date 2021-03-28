@@ -1,21 +1,6 @@
 import { HttpClient } from '../httpClient/httpClient';
-import { AuthLocalStorageKeys, AuthUrIs } from './enums';
-import { IAuthenticator, IAuthToken, IBaseTokenResult, IRegisterParams } from './types';
-
-export interface IAuthAdapter extends IAuthenticator {
-  login(email: string, password: string): Promise<any>;
-  logout(): void;
-  register(params: IRegisterParams): Promise<any>;
-  refreshToken(): void;
-  setAuthToken(tokenResult: IBaseTokenResult): void;
-  isAuthenticated(): boolean;
-}
-
-export interface IChangePassword {
-  changePassword(oldPassword: string, newPassword: string): Promise<any>;
-  resetPassword(email: string): Promise<any>;
-  setPassword(newPassword: string, otp: string): Promise<any>;
-}
+import { AuthLocalStorageKeys, AuthUrIs } from '../enums/auth.enum';
+import { IAuthAdapter, IAuthToken, IBaseTokenResult, IChangePassword, IRegisterParams } from '../types/auth.type';
 
 export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
   abstract login(email: string, password: string): Promise<any>;
@@ -44,7 +29,7 @@ export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
   setAccessToken(accessToken: string): void {
     const { authConfig } = HttpClient.httpConfig;
     localStorage.setItem(
-      authConfig.authStorageKeys.accessToken || AuthLocalStorageKeys.JWT_TOKEN,
+      authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.JWT_TOKEN,
       JSON.stringify(accessToken),
     );
   }
@@ -52,14 +37,14 @@ export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
   setRefreshToken(refreshToken: string): void {
     const { authConfig } = HttpClient.httpConfig;
     localStorage.setItem(
-      authConfig.authStorageKeys.refreshToken || AuthLocalStorageKeys.REFRESH_TOKEN,
+      authConfig?.authStorageKeys?.refreshToken || AuthLocalStorageKeys.REFRESH_TOKEN,
       JSON.stringify(refreshToken),
     );
   }
 
   logout(): void {
     const { authConfig } = HttpClient.httpConfig;
-    localStorage.removeItem(authConfig.authStorageKeys.accessToken || AuthLocalStorageKeys.JWT_TOKEN);
+    localStorage.removeItem(authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.JWT_TOKEN);
   }
 
   async register(params: IRegisterParams): Promise<any> {
