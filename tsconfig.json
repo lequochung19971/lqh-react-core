@@ -20,9 +20,19 @@
     "incremental": true,
     "noFallthroughCasesInSwitch": true,
     "strict": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@assets/*": ["assets/*"],
+      "@core/*": ["core/*"],
+      "@features/*": ["features/*"],
+      "@guards": ["guards/*"],
+      "@http": ["http"],
+      "@shared/*": ["shared/*"],
+      "@store/*": ["store/*"],
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build"]
-
 }

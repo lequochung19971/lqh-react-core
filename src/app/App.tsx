@@ -1,7 +1,6 @@
+import { HttpClient } from '@core/httpClient/httpClient';
+import http from '@http';
 import React, { useEffect } from 'react';
-import '../assets/styles/styles.scss';
-import { HttpClient } from '../core/httpClient/httpClient';
-import http from '../http/http';
 
 const App: React.FunctionComponent = () => {
   useEffect(() => {
