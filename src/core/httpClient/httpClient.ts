@@ -1,49 +1,55 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-
-export class HttpClientErrorModel extends Error {
-  constructor(public message: string, public code: string) {
-    super(message);
-  }
-}
-
-type HttpClientRequestConfig = AxiosRequestConfig;
-type HttpClientResponse<T = any> = AxiosResponse<T>;
-type HttpError<T = any> = AxiosError<T>;
-type HttpClientParams<T = unknown> = {
-  [P in keyof T]?: T[P];
-};
-
-type HttpClientPayload<T = unknown> = {
-  [P in keyof T]?: T[P];
-};
+import axios from 'axios';
+import queryString from 'query-string';
+import { HttpClientErrorModel } from '../models/httpClientError.model';
+import {
+  HttpClientConfig,
+  HttpClientOtherConfig,
+  HttpClientPayload,
+  HttpClientResponse,
+  HttpClientError,
+  HttpInterceptor,
+} from '../types/httpClient.type';
 
 export class HttpClient {
-  private static _httpConfig: HttpClientRequestConfig;
-  private static _authenticator: any;
+  private static _httpConfig: HttpClientConfig;
 
-  static setHttpConfig(config: HttpClientRequestConfig): void {
+  static set httpConfig(config: HttpClientConfig) {
     this._httpConfig = config;
   }
 
-  static getHttpConfig(): HttpClientRequestConfig {
+  static get httpConfig(): HttpClientConfig {
     return this._httpConfig;
   }
 
-  static async configs(
-    config: HttpClientRequestConfig,
-    isAuthenticated = true,
-  ): Promise<HttpClientRequestConfig> {
-    const authHeader = 'Bearer ...';
-    const { baseURL } = this._httpConfig;
+  static get interceptors(): HttpInterceptor {
+    return {
+      request: axios.interceptors.request,
+      response: axios.interceptors.response,
+    };
+  }
+
+  static async configs(config: HttpClientOtherConfig, isAuthenticated = true): Promise<HttpClientConfig> {
+    const headers = isAuthenticated ? this.getConfigHeader(config) : {};
+
+    return {
+      ...(this._httpConfig || {}),
+      headers,
+      paramsSerializer: (params: any) => queryString.stringify(params),
+    };
+  }
+
+  private static getConfigHeader(config: HttpClientConfig): any {
+    const authHeader = this._httpConfig?.authConfig?.authInstance?.getAuthHeader();
     let headers = config?.headers || {};
 
-    if (authHeader && isAuthenticated) {
+    if (authHeader) {
       headers = {
         ...headers,
         Authorization: authHeader,
       };
     }
-    return { ...config, headers, baseURL };
+
+    return headers;
   }
 
   private static getUri(uri: string): string {
@@ -54,82 +60,74 @@ export class HttpClient {
     return response.data as T;
   }
 
-  private static error(err: HttpError): void {
+  private static error(err: HttpClientError): Error {
     const { code: errorCode = 'unknown' } = err.response?.data;
     const { message } = err.response?.data || err;
-    throw new HttpClientErrorModel(message, errorCode);
+    return new HttpClientErrorModel(message, errorCode);
   }
 
-  static async get<T, TParams>(
-    uri: string,
-    params: HttpClientParams<TParams>,
-    isAuthenticated = true,
-  ): Promise<T | void> {
+  static async get<T>(uri: string, otherConfig?: HttpClientOtherConfig | null, isAuthenticated = true): Promise<T> {
     try {
-      const config = await this.configs({ params }, isAuthenticated);
+      const config = await this.configs(otherConfig || ({} as HttpClientOtherConfig), isAuthenticated);
       const response = await axios.get(this.getUri(uri), config);
       return this.success<T>(response);
     } catch (error) {
-      return this.error(error);
+      throw this.error(error);
     }
   }
 
-  static async post<T, TParams, TPayload>(
+  static async post<T, TPayload>(
     uri: string,
     payload: HttpClientPayload<TPayload>,
-    params: HttpClientParams<TParams>,
+    otherConfig?: HttpClientOtherConfig | null,
     isAuthenticated = true,
-  ): Promise<T | void> {
+  ): Promise<T> {
     try {
-      const config = await this.configs({ params }, isAuthenticated);
+      const config = await this.configs(otherConfig || ({} as HttpClientOtherConfig), isAuthenticated);
       const response: HttpClientResponse<T> = await axios.post<T>(this.getUri(uri), payload, config);
       return this.success<T>(response);
     } catch (error) {
-      return this.error(error);
+      throw this.error(error);
     }
   }
 
-  static async patch<T, TParams, TPayload>(
+  static async patch<T, TPayload>(
     uri: string,
     payload: HttpClientPayload<TPayload>,
-    params: HttpClientParams<TParams>,
+    otherConfig?: HttpClientOtherConfig | null,
     isAuthenticated = true,
-  ): Promise<T | void> {
+  ): Promise<T> {
     try {
-      const config = await this.configs({ params }, isAuthenticated);
+      const config = await this.configs(otherConfig || ({} as HttpClientOtherConfig), isAuthenticated);
       const response: HttpClientResponse<T> = await axios.patch<T>(this.getUri(uri), payload, config);
       return this.success<T>(response);
     } catch (error) {
-      return this.error(error);
+      throw this.error(error);
     }
   }
 
-  static async put<T, TParams, TPayload>(
+  static async put<T, TPayload>(
     uri: string,
     payload: HttpClientPayload<TPayload>,
-    params: HttpClientParams<TParams>,
+    otherConfig?: HttpClientOtherConfig | null,
     isAuthenticated = true,
-  ): Promise<T | void> {
+  ): Promise<T> {
     try {
-      const config = await this.configs({ params }, isAuthenticated);
+      const config = await this.configs(otherConfig || ({} as HttpClientOtherConfig), isAuthenticated);
       const response: HttpClientResponse<T> = await axios.put<T>(this.getUri(uri), payload, config);
       return this.success<T>(response);
     } catch (error) {
-      return this.error(error);
+      throw this.error(error);
     }
   }
 
-  static async delete<T, TParams>(
-    uri: string,
-    params: HttpClientParams<TParams>,
-    isAuthenticated = true,
-  ): Promise<T | void> {
+  static async delete<T>(uri: string, otherConfig?: HttpClientOtherConfig | null, isAuthenticated = true): Promise<T> {
     try {
-      const config = await this.configs({ params }, isAuthenticated);
+      const config = await this.configs(otherConfig || ({} as HttpClientOtherConfig), isAuthenticated);
       const response: HttpClientResponse<T> = await axios.delete<T>(this.getUri(uri), config);
       return this.success<T>(response);
     } catch (error) {
-      return this.error(error);
+      throw this.error(error);
     }
   }
 }

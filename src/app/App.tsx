@@ -1,24 +1,20 @@
-import React from 'react';
-import '../assets/styles/styles.scss';
+import { CssBaseline } from '@material-ui/core';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Shell } from 'shared/components';
+import AppRouter from './AppRouting';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App: React.FunctionComponent = () => (
+  <>
+    <Suspense fallback={<div>Loading ...</div>}>
+      <CssBaseline></CssBaseline>
+      <Router>
+        <Shell>
+          <AppRouter />
+        </Shell>
+      </Router>
+    </Suspense>
+  </>
+);
 
 export default App;
