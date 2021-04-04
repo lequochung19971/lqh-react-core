@@ -8,7 +8,7 @@ interface LoadingProviderRef {
 
 export const { provider: LoadingProvider, useCustomContext: useLoadingContext } = useProviderFactory(
   {} as LoadingProviderRef,
-  (context) => {
+  (Context) => {
     const LoadingProvider: React.FunctionComponent = (props) => {
       const [isLoading, setIsLoading] = useState(false);
 
@@ -17,7 +17,7 @@ export const { provider: LoadingProvider, useCustomContext: useLoadingContext } 
         setIsLoading,
       };
 
-      return <context.Provider value={instance}>{props.children}</context.Provider>;
+      return <Context.Provider value={instance}>{props.children}</Context.Provider>;
     };
 
     return LoadingProvider;
