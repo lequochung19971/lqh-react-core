@@ -2,7 +2,7 @@ import { AxiosError, AxiosInterceptorManager, AxiosRequestConfig, AxiosResponse 
 import { AuthConfig } from "./auth.type";
 
 export type HttpClientConfig = Partial<AxiosRequestConfig> & {
-  authConfig: AuthConfig;
+  authConfig?: AuthConfig;
 };
 export type HttpClientOtherConfig = Omit<HttpClientConfig, 'baseURL' | 'paramsSerializer'>;
 export type HttpClientResponse<T = any> = Partial<AxiosResponse<T>>;
