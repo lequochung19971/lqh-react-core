@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-interface useProviderFactoryRef<TRef> {
+export interface useProviderFactoryRef<TRef> {
   context: React.Context<TRef>;
   provider: React.FunctionComponent;
   useCustomContext: () => TRef;
@@ -17,5 +17,5 @@ export function useProviderFactory<TRef extends unknown = any>(
     context,
     provider,
     useCustomContext,
-  };
+  } as useProviderFactoryRef<TRef>;
 }

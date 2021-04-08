@@ -4,7 +4,7 @@ import React, { cloneElement } from 'react';
 export interface ProvidersFactoryProps {
   providers: any;
 }
-const ProvidersFactory: React.FunctionComponent<ProvidersFactoryProps> = (props) => {
+const ProvidersGroup: React.FunctionComponent<ProvidersFactoryProps> = (props) => {
   let children: any = props.children;
 
   /* Error - Validation */
@@ -33,4 +33,4 @@ const ProvidersFactory: React.FunctionComponent<ProvidersFactoryProps> = (props)
   return children;
 }
 
-export default ProvidersFactory;
+export default ProvidersGroup;

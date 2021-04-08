@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import { useLoadingContext } from 'shared/providers/loadingProviders';
+import { PageLoading } from 'shared/components';
+import { useLoadingContext } from 'shared/providers/LoadingProviders';
 
 const SamplePage: React.FunctionComponent = () => {
-  const { isLoading, setIsLoading } = useLoadingContext();
-
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
-
-  return <button onClick={() => setIsLoading(!isLoading)}>Click me!!!!</button>;
+  const { setIsPageLoading } = useLoadingContext();
+  return (
+    <>
+      <button onClick={() => setIsPageLoading(true)}>Click me!!!!</button>
+    </>
+  );
 };
 
 export default SamplePage;
