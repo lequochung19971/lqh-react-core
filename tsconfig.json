@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -25,13 +21,18 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "downlevelIteration": true,
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@assets/*": ["src/assets/*"],
+      "@core/*": ["src/core/*"],
+      "@features/*": ["src/features/*"],
+      "@guards": ["src/guards/*"],
+      "@http": ["src/http"],
+      "@shared/*": ["src/shared/*"],
+      "@store/*": ["src/store/*"]
+    }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build"]
 }
