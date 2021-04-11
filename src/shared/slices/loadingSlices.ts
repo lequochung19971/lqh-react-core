@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { RootState } from '@store/types';
 
 const initialState = {
   isPageLoading: false,
@@ -8,14 +9,16 @@ const loadingSlice = createSlice({
   name: '@Loading',
   initialState,
   reducers: {
-    open(state, action: PayloadAction<boolean>) {
-      state.isPageLoading = action.payload;
+    open(state) {
+      state.isPageLoading = true;
     },
-    close(state, action: PayloadAction<boolean>) {
-      state.isPageLoading = action.payload;
+    close(state) {
+      state.isPageLoading = false;
     },
   },
 });
 
 export default loadingSlice.reducer;
-export const { open, close } = loadingSlice.actions;
+export const pageLoading = loadingSlice.actions;
+
+export const selectIsPageLoading = (state: RootState): boolean => state.loadingReducer.isPageLoading;

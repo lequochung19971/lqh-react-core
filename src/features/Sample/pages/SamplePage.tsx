@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { PageLoading } from '@shared/components';
-import { useLoadingContext } from '@shared/providers/LoadingProviders';
+import React from 'react';
+import { useAppDispatch } from '@store/hooks';
+import { pageLoading } from '@shared/slices/loadingSlices';
 
 const SamplePage: React.FunctionComponent = () => {
-  const { setIsPageLoading } = useLoadingContext();
+  const dispatch = useAppDispatch();
   return (
     <>
-      <button onClick={() => setIsPageLoading(true)}>Click me!!!!</button>
+      <button onClick={() => dispatch(pageLoading.open())}>Click me!!!!</button>
     </>
   );
 };

@@ -1,7 +1,8 @@
 import { Backdrop, styled } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React from 'react';
-import { useLoadingContext } from '@shared/providers/LoadingProviders';
+import { selectIsPageLoading } from '@shared/slices/loadingSlices';
+import { useAppSelector } from '@store/hooks';
 
 const StyledBackdrop = styled(Backdrop)({
   zIndex: 9999,
@@ -13,7 +14,7 @@ interface PageLoadingProps {
 }
 
 const PageLoading: React.FunctionComponent<PageLoadingProps> = ({ loading = false }) => {
-  const { isPageLoading } = useLoadingContext();
+  const isPageLoading = useAppSelector(selectIsPageLoading);
   return (
     <StyledBackdrop open={loading || isPageLoading}>
       <CircularProgress />

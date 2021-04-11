@@ -25,7 +25,8 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "downlevelIteration": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*"

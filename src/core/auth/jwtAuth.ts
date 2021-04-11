@@ -1,5 +1,5 @@
-import { AuthLocalStorageKeys, AuthUrIs, TokenType } from '../enums/auth.enum';
-import { HttpClient } from '../httpClient/httpClient';
+import { AuthLocalStorageKeys, AuthUrIs, TokenType } from '../enums/Auth.enum';
+import { HttpClient } from '../HttpClient/httpClient';
 import { IAuthToken, IJwtToken, ILoginParams } from '../types/auth.type';
 import { BaseAuth } from './baseAuth';
 

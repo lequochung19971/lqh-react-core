@@ -1,1 +1,1 @@
-export * from './auth.enum';
+export * from './Auth.enum';

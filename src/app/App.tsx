@@ -4,22 +4,26 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { PageLoading, Shell } from '@shared/components';
 import { LoadingProvider } from '@shared/providers/LoadingProviders';
-import AppRouter from './AppRouting';
+import AppRouting from './AppRouting';
+import store from '@store/store';
+import { Provider } from 'react-redux';
 
 const providers = [LoadingProvider];
 
 const App: React.FunctionComponent = () => (
   <>
-    <Suspense fallback={<PageLoading loading={true} />}>
-      <ProvidersGroup providers={providers}>
-        <CssBaseline />
-        <Router>
-          <Shell>
-            <AppRouter />
-          </Shell>
-        </Router>
-      </ProvidersGroup>
-    </Suspense>
+    <Provider store={store}>
+      <Suspense fallback={<PageLoading loading={true} />}>
+        <ProvidersGroup providers={providers}>
+          <CssBaseline />
+          <Router>
+            <Shell>
+              <AppRouting />
+            </Shell>
+          </Router>
+        </ProvidersGroup>
+      </Suspense>
+    </Provider>
   </>
 );
 
