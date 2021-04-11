@@ -1,4 +1,4 @@
-import { HttpClient } from "@core/HttpClient/httpClient";
+import { HttpClient } from "@core/HttpClient/HttpClient";
 
 export class Employee {
   static getEmployees(): Promise<any> {

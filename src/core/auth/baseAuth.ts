@@ -1,6 +1,6 @@
 import { AuthLocalStorageKeys, AuthUrIs } from '@core/enums';
 import { IAuthAdapter, IAuthToken, IBaseTokenResult, IChangePassword, IRegisterParams  } from '@core/types';
-import { HttpClient } from '../HttpClient/httpClient';
+import { HttpClient } from '../HttpClient/HttpClient';
 
 export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
   abstract login(email: string, password: string): Promise<any>;

@@ -1,5 +1,5 @@
 import { AxiosError, AxiosInterceptorManager, AxiosRequestConfig, AxiosResponse } from "axios";
-import { AuthConfig } from "./auth.type";
+import { AuthConfig } from "./Auth.type";
 
 export type HttpClientConfig = Partial<AxiosRequestConfig> & {
   authConfig?: AuthConfig;

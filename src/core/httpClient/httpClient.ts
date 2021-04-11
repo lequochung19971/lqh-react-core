@@ -8,7 +8,7 @@ import {
   HttpClientResponse,
   HttpClientError,
   HttpInterceptor,
-} from '../types/httpClient.type';
+} from '../types/HttpClient.type';
 
 export class HttpClient {
   private static _httpConfig: HttpClientConfig;

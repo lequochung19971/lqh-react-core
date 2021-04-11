@@ -16,6 +16,10 @@ const AppRouting: React.FunctionComponent = () => {
           path: '/sample',
           component: lazy(() => import('../features/Sample')),
         },
+        {
+          path: '/employee',
+          component: lazy(() => import('../features/Employee')),
+        },
       ]),
     [],
   );
