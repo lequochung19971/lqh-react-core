@@ -1,7 +1,12 @@
 {
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -9,7 +14,6 @@
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "isolatedModules": true,
     "resolveJsonModule": true,
     "noEmit": true,
     "jsx": "react-jsx",
@@ -21,18 +25,14 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "downlevelIteration": true,
-    "baseUrl": "./src",
-    "paths": {
-      "@app/*": ["src/app/*"],
-      "@assets/*": ["src/assets/*"],
-      "@core/*": ["src/core/*"],
-      "@features/*": ["src/features/*"],
-      "@guards": ["src/guards/*"],
-      "@http": ["src/http"],
-      "@shared/*": ["src/shared/*"],
-      "@store/*": ["src/store/*"]
-    }
+    "isolatedModules": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "build"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "**/node_modules/*"
+  ]
 }

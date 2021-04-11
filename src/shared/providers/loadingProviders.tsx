@@ -1,4 +1,4 @@
-import { useProviderFactory } from 'core/hooks/useProviderFactory';
+import { useProviderFactory } from '@core/hooks/useProviderFactory';
 import React, { useState, Dispatch, SetStateAction } from 'react';
 
 interface LoadingProviderRef {

@@ -1,5 +1,5 @@
 // import { JwtAuth } from "core/auth/jwtAuth";
-import { HttpClient } from "core/httpClient/httpClient";
+import { HttpClient } from "@core/httpClient/httpClient";
 import { Employee } from "./employee";
 
 HttpClient.httpConfig = {

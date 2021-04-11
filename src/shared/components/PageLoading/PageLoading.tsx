@@ -1,7 +1,7 @@
 import { Backdrop, styled } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React from 'react';
-import { useLoadingContext } from 'shared/providers/LoadingProviders';
+import { useLoadingContext } from '@shared/providers/LoadingProviders';
 
 const StyledBackdrop = styled(Backdrop)({
   zIndex: 9999,

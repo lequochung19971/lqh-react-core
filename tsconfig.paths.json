@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+		"baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@assets/*": ["src/assets/*"],
+      "@core/*": ["src/core/*"],
+      "@features/*": ["src/features/*"],
+      "@guards": ["src/guards/*"],
+      "@http": ["src/http"],
+      "@shared/*": ["src/shared/*"],
+      "@store/*": ["src/store/*"]
+    }
+  }
+}

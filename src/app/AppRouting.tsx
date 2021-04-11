@@ -1,7 +1,7 @@
-import { RouteConfig } from 'core/types';
+import { RouteConfig } from '@core/types';
 import React, { lazy } from 'react';
-import { LqhRouting } from 'shared/components';
-import { createRoutes } from 'shared/components/Routers/LqhRouting';
+import { LqhRouting } from '@shared/components';
+import { createRoutes } from '@shared/components/Routers/LqhRouting';
 
 const routes: RouteConfig[] = createRoutes([
   {

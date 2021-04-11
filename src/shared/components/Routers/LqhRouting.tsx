@@ -1,4 +1,4 @@
-import { RouteConfig } from 'core/types';
+import { RouteConfig } from '@core/types';
 import React from 'react';
 import { Switch } from 'react-router-dom';
 import { LqhRoute } from '..';

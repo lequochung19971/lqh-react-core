@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { PageLoading } from 'shared/components';
-import { useLoadingContext } from 'shared/providers/LoadingProviders';
+import { PageLoading } from '@shared/components';
+import { useLoadingContext } from '@shared/providers/LoadingProviders';
 
 const SamplePage: React.FunctionComponent = () => {
   const { setIsPageLoading } = useLoadingContext();
