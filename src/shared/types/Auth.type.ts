@@ -1,4 +1,4 @@
-import { BaseAuth } from "../auth/BaseAuth";
+import { BaseAuth } from "@shared/auth/BaseAuth";
 import { AuthLocalStorageKeys, TokenType } from "../enums/Auth.enum";
 
 export interface IAuthToken {

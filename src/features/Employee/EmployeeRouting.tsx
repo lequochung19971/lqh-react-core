@@ -1,4 +1,4 @@
-import { RouteConfig } from '@core/types';
+import { RouteConfig } from '@shared/types';
 import React, { useMemo } from 'react';
 import { LqhRouting } from '@shared/components';
 import { createRoutes } from '@shared/components/Routers/LqhRouting';

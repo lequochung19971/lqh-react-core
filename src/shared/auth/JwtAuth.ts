@@ -1,6 +1,6 @@
-import { AuthLocalStorageKeys, AuthUrIs, TokenType } from '../enums/Auth.enum';
-import { HttpClient } from '../HttpClient/HttpClient';
-import { IAuthToken, IJwtToken, ILoginParams } from '../types/Auth.type';
+import { AuthLocalStorageKeys, AuthUrIs, TokenType } from '@shared/enums';
+import { HttpClient } from '@shared/httpClient/httpClient';
+import { IAuthToken, IJwtToken, ILoginParams } from '@shared/types';
 import { BaseAuth } from './BaseAuth';
 
 export class JwtAuth extends BaseAuth {

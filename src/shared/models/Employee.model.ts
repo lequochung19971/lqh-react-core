@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { Expose, Type } from 'class-transformer';
 import { DepartmentModel } from './Department.model';
-import { Positions } from '@core/enums/Positions.enum';
+import { Positions } from '@shared/enums/Positions.enum';
 import { PositionModel } from './Position.model';
-import { Gender } from '@core/enums/Gender.enum';
+import { Gender } from '@shared/enums/Gender.enum';
 import { AddressModel } from './Address.model';
 import { IDCardModel } from './IdCard.model';
 import { BaseModel } from './Base.model';

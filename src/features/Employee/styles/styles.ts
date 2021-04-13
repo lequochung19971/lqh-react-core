@@ -17,3 +17,9 @@ export const useFormDialogStyles = makeStyles({
     position: 'relative'
   }
 });
+
+export const useFormStyles = makeStyles({
+  textField: {
+    margin: '8px'
+  }
+})

@@ -1,4 +1,4 @@
-import { HttpClientErrorModel } from '@core/models/HttpClientError.model';
+import { HttpClientErrorModel } from '@shared/models/HttpClientError.model';
 import axios from 'axios';
 import queryString from 'query-string';
 import {
@@ -8,7 +8,7 @@ import {
   HttpClientResponse,
   HttpClientError,
   HttpInterceptor,
-} from '../types/HttpClient.type';
+} from '@shared/types';
 
 export class HttpClient {
   private static _httpConfig: HttpClientConfig;

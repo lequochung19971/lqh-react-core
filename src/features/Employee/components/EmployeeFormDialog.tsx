@@ -24,7 +24,7 @@ const EmployeeFormDialog: React.FunctionComponent<DialogProps> = (props) => {
 
   return (
     <>
-      <Dialog fullScreen {...restProps} onClose={onClose} TransitionComponent={Transition}>
+      <Dialog fullScreen {...restProps} onClose={onClose}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">

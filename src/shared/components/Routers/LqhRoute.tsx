@@ -1,4 +1,4 @@
-import { RouteConfig } from "@core/types";
+import { RouteConfig } from "@shared/types";
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 

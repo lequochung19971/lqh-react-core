@@ -1,4 +1,4 @@
-import { NavigatorConfig } from '@core/types';
+import { NavigatorConfig } from '@shared/types';
 import PersonIcon from '@material-ui/icons/Person';
 
 export const navigators: NavigatorConfig[] = [

@@ -1,4 +1,4 @@
-import { RouteConfig } from '@core/types';
+import { RouteConfig } from '@shared/types';
 import React from 'react';
 import { useRouteMatch } from 'react-router';
 import { createRoutes, LqhRouting } from '@shared/components';

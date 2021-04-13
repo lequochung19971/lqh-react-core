@@ -3,13 +3,19 @@
 		"baseUrl": ".",
     "paths": {
       "@app/*": ["src/app/*"],
+      "@app": ["src/app"],
       "@assets/*": ["src/assets/*"],
-      "@core/*": ["src/core/*"],
+      "@assets": ["src/assets"],
       "@features/*": ["src/features/*"],
-      "@guards": ["src/guards/*"],
+      "@features": ["src/features"],
+      "@guards/*": ["src/guards/*"],
+      "@guards": ["src/guards"],
+      "@http/*": ["src/http/*"],
       "@http": ["src/http"],
       "@shared/*": ["src/shared/*"],
-      "@store/*": ["src/store/*"]
+      "@shared/": ["src/shared"],
+      "@store/*": ["src/store/*"],
+      "@store/": ["src/store"]
     }
   }
 }
