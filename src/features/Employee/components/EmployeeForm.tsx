@@ -1,11 +1,9 @@
-import { EmployeeModel } from '@shared/models/Employee.model';
 import { Box, Button, TextField } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import { Controller, FormProvider, useForm, useFormContext, useFormState } from 'react-hook-form';
 import { useFormStyles } from '../styles/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import useMaterialHookForm, { useAppFormContext } from './useAppForm';
+import { Controller, FormProvider, useForm, useFormContext } from '@shared/hooks/custom-react-hook-form';
 
 // type EmployeeForm = Omit<EmployeeModel, '_id' | 'avatar' | 'fullName' | '_guid'>;
 interface EmployeeForm {
@@ -33,18 +31,18 @@ const EmployeeForm: React.FunctionComponent = () => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useMaterialHookForm<EmployeeForm>({
+    setValues,
+  } = useForm<EmployeeForm>({
     defaultValues,
     resolver: yupResolver(schema),
     reValidateMode: 'onChange',
   });
-  const methods = useMaterialHookForm<EmployeeForm>({
+  const methods = useForm<EmployeeForm>({
     defaultValues,
     resolver: yupResolver(schema),
     reValidateMode: 'onChange',
   });
 
-  console.log(errors);
   const onSubmit = (data: any) => {
     console.log(data);
   };
@@ -52,6 +50,14 @@ const EmployeeForm: React.FunctionComponent = () => {
   useEffect(() => {
     console.log(errors);
   }, [watch('firstName')]);
+
+  const handleClick = () => {
+    setValues({
+      firstName: 'Le',
+      lastName: 'Hung',
+      fullName: 'Le Hung',
+    })
+  }
 
   return (
     <>
@@ -115,11 +121,14 @@ const EmployeeForm: React.FunctionComponent = () => {
             </Box>
 
             <Box m="8px" mt="20px">
-              <Button type="submit" color="primary" variant="contained" size="large">
+              <Button type="submit" color="primary" variant="contained" size="large" >
                 Save
               </Button>
               <Button color="secondary" variant="contained" size="large">
                 Cancel
+              </Button>
+              <Button color="primary" variant="outlined" size="large" onClick={handleClick}>
+                Field Data
               </Button>
             </Box>
           </Box>
@@ -132,7 +141,7 @@ const EmployeeForm: React.FunctionComponent = () => {
 export default EmployeeForm;
 
 const TestFormComponent = () => {
-  const methods = useAppFormContext();
+  const methods = useFormContext();
   console.log(methods);
   return <div>TestFormComponent</div>
 }
