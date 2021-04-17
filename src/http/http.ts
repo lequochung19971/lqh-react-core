@@ -1,9 +1,11 @@
 // import { JwtAuth } from "core/auth/jwtAuth";
-import { HttpClient } from '@shared/httpClient/httpClient';
 import { Employee } from './employee';
+import { HttpClient } from './HttpClient';
 
-HttpClient.httpConfig = {
-  baseURL: 'http://localhost:3000',
-};
+export function HttpInit (): void {
+  HttpClient.httpConfig = {
+    baseURL: 'http://localhost:3000',
+  };
+}
 
-export default { Employee };
+export { Employee };

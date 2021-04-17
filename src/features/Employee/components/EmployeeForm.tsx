@@ -3,25 +3,31 @@ import React, { useEffect } from 'react';
 import { useFormStyles } from '../styles/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Controller, FormProvider, useForm, useFormContext } from '@shared/hooks/custom-react-hook-form';
+import { Controller, FormProvider, useForm, useFormContext } from '@shared/hooks';
+import { invalidFirstName } from '@shared/validations/employee.validation';
 
 // type EmployeeForm = Omit<EmployeeModel, '_id' | 'avatar' | 'fullName' | '_guid'>;
+
 interface EmployeeForm {
   firstName: string;
   lastName: string;
   fullName: string;
+  dob: string;
 }
 
-const schema: yup.SchemaOf<EmployeeForm> = yup.object().shape({
-  firstName: yup.string().required('Required'),
+yup.addMethod(yup.string, 'invalidFirstName', invalidFirstName);
+const schema: any = yup.object().shape({
+  firstName: yup.string().required('Required').invalidFirstName('Test'),
   lastName: yup.string().required('Required'),
   fullName: yup.string().required('Required'),
+  dob: yup.string()
 });
 
 const defaultValues = {
   firstName: '',
   lastName: '',
   fullName: '',
+  dob: '',
 };
 
 const EmployeeForm: React.FunctionComponent = () => {
@@ -32,15 +38,17 @@ const EmployeeForm: React.FunctionComponent = () => {
     formState: { errors },
     watch,
     setValues,
+    getErrorsMui,
   } = useForm<EmployeeForm>({
     defaultValues,
     resolver: yupResolver(schema),
-    reValidateMode: 'onChange',
+    mode: 'onChange'
   });
   const methods = useForm<EmployeeForm>({
     defaultValues,
     resolver: yupResolver(schema),
     reValidateMode: 'onChange',
+
   });
 
   const onSubmit = (data: any) => {
@@ -56,13 +64,13 @@ const EmployeeForm: React.FunctionComponent = () => {
       firstName: 'Le',
       lastName: 'Hung',
       fullName: 'Le Hung',
-    })
-  }
+      dob: '12/12/2012',
+    });
+  };
 
   return (
     <>
       <FormProvider {...methods}>
-        <TestFormComponent />
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box display="flex" flexWrap="wrap" p="20px">
             <Box display="flex" width="100%">
@@ -72,7 +80,7 @@ const EmployeeForm: React.FunctionComponent = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    helperText={errors.firstName?.message}
+                    {...getErrorsMui('firstName')}
                     label="First Name"
                     className={classes.textField}
                     variant="outlined"
@@ -85,7 +93,14 @@ const EmployeeForm: React.FunctionComponent = () => {
                 name="lastName"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} label="Last Name" className={classes.textField} variant="outlined" fullWidth />
+                  <TextField
+                    {...field}
+                    {...getErrorsMui('lastName')}
+                    label="Last Name"
+                    className={classes.textField}
+                    variant="outlined"
+                    fullWidth
+                  />
                 )}
               />
               <Controller
@@ -97,7 +112,20 @@ const EmployeeForm: React.FunctionComponent = () => {
               />
             </Box>
             <Box display="flex" width="100%">
-              <TextField label="Date of Birth" className={classes.textField} variant="outlined" fullWidth />
+              <Controller
+                name="dob"
+                {...getErrorsMui('dob')}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Date of Birth"
+                    className={classes.textField}
+                    variant="outlined"
+                    fullWidth
+                  />
+                )}
+              />
               <TextField label="Age" className={classes.textField} variant="outlined" fullWidth />
             </Box>
             <Box display="flex" width="100%">
@@ -121,7 +149,7 @@ const EmployeeForm: React.FunctionComponent = () => {
             </Box>
 
             <Box m="8px" mt="20px">
-              <Button type="submit" color="primary" variant="contained" size="large" >
+              <Button type="submit" color="primary" variant="contained" size="large">
                 Save
               </Button>
               <Button color="secondary" variant="contained" size="large">
@@ -143,5 +171,5 @@ export default EmployeeForm;
 const TestFormComponent = () => {
   const methods = useFormContext();
   console.log(methods);
-  return <div>TestFormComponent</div>
-}
+  return <div>TestFormComponent</div>;
+};

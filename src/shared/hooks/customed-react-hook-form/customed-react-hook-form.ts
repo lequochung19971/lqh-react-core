@@ -5,12 +5,14 @@ import {
   FieldValues,
   UseFormProps,
   UseFormReturn,
+  FieldError,
 } from 'react-hook-form';
 
 export * from 'react-hook-form'
 
 interface UseAppFormReturn<TFieldValues extends FieldValues = FieldValues> extends UseFormReturn<TFieldValues> {
   setValues: (data: TFieldValues) => void;
+  getErrorsMui: (fieldName: string) => { error: boolean, helperText: string }
 }
 
 export function useForm<TFieldValues extends FieldValues = FieldValues, TContext extends object = object>(
@@ -26,9 +28,18 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
     }
   };
 
+  const getErrorsMui = (fieldName: string) => {
+    const currentError = formRef.formState.errors[fieldName] as FieldError;
+    return {
+      error: !!currentError,
+      helperText: currentError?.message ?? ''
+    }
+  }
+
   return {
     ...formRef,
     setValues,
+    getErrorsMui
   };
 }
 

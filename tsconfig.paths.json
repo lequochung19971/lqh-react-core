@@ -13,9 +13,9 @@
       "@http/*": ["src/http/*"],
       "@http": ["src/http"],
       "@shared/*": ["src/shared/*"],
-      "@shared/": ["src/shared"],
+      "@shared": ["src/shared"],
       "@store/*": ["src/store/*"],
-      "@store/": ["src/store"]
+      "@store": ["src/store"]
     }
   }
 }

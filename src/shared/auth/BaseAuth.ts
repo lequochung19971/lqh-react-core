@@ -1,5 +1,5 @@
 import { AuthLocalStorageKeys, AuthUrIs } from '@shared/enums';
-import { HttpClient } from '@shared/httpClient/httpClient';
+import { HttpClient } from '@shared/HttpClient/HttpClient';
 import { IAuthAdapter, IAuthToken, IBaseTokenResult, IChangePassword, IRegisterParams  } from '@shared/types';
 
 export abstract class BaseAuth implements IAuthAdapter, IChangePassword {

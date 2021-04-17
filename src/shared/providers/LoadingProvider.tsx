@@ -1,18 +1,19 @@
-import { useProviderFactory } from '@shared/hooks/useProviderFactory';
+import { useContextFactory } from '@shared/hooks/useContextFactory';
 import React, { useState, Dispatch, SetStateAction } from 'react';
 
-interface LoadingProviderRef {
+interface LoadingContextRef {
   isPageLoading: boolean;
   setIsPageLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-export const { provider: LoadingProvider, useCustomContext: useLoadingContext } = useProviderFactory(
-  {} as LoadingProviderRef,
+export const { LoadingProvider, useLoadingContext, LoadingContext } = useContextFactory<'loading', LoadingContextRef>(
+  'loading',
+  {} as LoadingContextRef,
   (Context) => {
     const LoadingProvider: React.FunctionComponent = (props) => {
       const [isPageLoading, setIsPageLoading] = useState(false);
 
-      const instance: LoadingProviderRef = {
+      const instance: LoadingContextRef = {
         isPageLoading,
         setIsPageLoading,
       };

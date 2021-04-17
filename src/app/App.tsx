@@ -1,28 +1,28 @@
 import { CssBaseline } from '@material-ui/core';
-import ProvidersGroup from '@shared/components/ProviderFactory/ProvidersFactory';
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { PageLoading, Shell } from '@shared/components';
-import { LoadingProvider } from '@shared/providers/LoadingProviders';
+import { PageLoading, ProvidersGroup, Shell } from '@shared/components';
+import { LoadingProvider } from '@shared/providers';
 import AppRouting from './AppRouting';
-import store from '@store/store';
-import { Provider } from 'react-redux';
+import { Provider, store } from '@store';
+import AppInit from './AppInit';
 
+AppInit();
 const providers = [LoadingProvider];
 
 const App: React.FunctionComponent = () => (
   <>
     <Provider store={store}>
-      <Suspense fallback={<PageLoading loading={true} />}>
-        <ProvidersGroup providers={providers}>
-          <CssBaseline />
-          <Router>
-            <Shell>
+      <ProvidersGroup providers={providers}>
+        <CssBaseline />
+        <Router>
+          <Shell>
+            <Suspense fallback={<PageLoading loading={true} />}>
               <AppRouting />
-            </Shell>
-          </Router>
-        </ProvidersGroup>
-      </Suspense>
+            </Suspense>
+          </Shell>
+        </Router>
+      </ProvidersGroup>
     </Provider>
   </>
 );

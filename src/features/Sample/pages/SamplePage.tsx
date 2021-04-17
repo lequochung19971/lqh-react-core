@@ -1,9 +1,9 @@
 import React from 'react';
-import { useAppDispatch } from '@store/hooks';
-import { pageLoading } from '@shared/slices/loadingSlices';
+import { useDispatch } from '@store';
+import { pageLoading } from '@shared/slices';
 
 const SamplePage: React.FunctionComponent = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   return (
     <>
       <button onClick={() => dispatch(pageLoading.open())}>Click me!!!!</button>
