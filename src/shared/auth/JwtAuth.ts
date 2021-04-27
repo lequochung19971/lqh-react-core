@@ -1,5 +1,5 @@
+import { HttpClient } from '@http/HttpClient';
 import { AuthLocalStorageKeys, AuthUrIs, TokenType } from '@shared/enums';
-import { HttpClient } from '@shared/HttpClient/HttpClient';
 import { IAuthToken, IJwtToken, ILoginParams } from '@shared/types';
 import { BaseAuth } from './BaseAuth';
 

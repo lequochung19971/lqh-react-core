@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useDispatch } from '@store';
-import { pageLoading } from '@shared/slices';
+import { styled } from '@material-ui/core';
+
+const Wrapper = styled('div')({
+  '& img': {
+    width: '100%',
+  },
+});
 
 const SamplePage: React.FunctionComponent = () => {
   const dispatch = useDispatch();
+
+  const onClick = () => {
+    setTimeout(() => {
+      console.log('TImeout');
+    }, 2000);
+  };
+
   return (
-    <>
-      <button onClick={() => dispatch(pageLoading.open())}>Click me!!!!</button>
-    </>
+    <Suspense fallback={<div>Loading....</div>}>
+      <Wrapper>
+        <button onClick={onClick}>Click me!!!!</button>
+      </Wrapper>
+    </Suspense>
   );
 };
 

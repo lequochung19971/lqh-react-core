@@ -1,8 +1,8 @@
-import { CssBaseline } from '@material-ui/core';
 import React, { Suspense } from 'react';
+import { CssBaseline } from '@material-ui/core';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { PageLoading, ProvidersGroup, Shell } from '@shared/components';
-import { LoadingProvider } from '@shared/providers';
+import { LoadingProvider } from '@shared/contexts';
 import AppRouting from './AppRouting';
 import { Provider, store } from '@store';
 import AppInit from './AppInit';

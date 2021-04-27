@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { get } from 'lodash';
 import {
   useForm as useOriginalForm,
   useFormContext as useOriginalFormContext,
@@ -29,7 +30,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
   };
 
   const getErrorsMui = (fieldName: string) => {
-    const currentError = formRef.formState.errors[fieldName] as FieldError;
+    const currentError = get(formRef.formState.errors, fieldName) as FieldError;
     return {
       error: !!currentError,
       helperText: currentError?.message ?? ''

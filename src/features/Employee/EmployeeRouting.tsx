@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { LqhRouting } from '@shared/components';
 import { createRoutes } from '@shared/components/Routers/LqhRouting';
 import { useRouteMatch } from 'react-router-dom';
-import Employees from './pages/Employees';
+import EmployeesPage from './pages/EmployeesPage';
 
 const EmployeeRouting: React.FunctionComponent = () => {
   const { url: parentUrl } = useRouteMatch();
@@ -14,13 +14,13 @@ const EmployeeRouting: React.FunctionComponent = () => {
         {
           path: '/',
           exact: true,
-          component: Employees
+          component: EmployeesPage
         },
         {
           path: '/detail',
         },
       ], parentUrl),
-    [],
+    [parentUrl],
   );
 
   return <LqhRouting routes={routes} />;

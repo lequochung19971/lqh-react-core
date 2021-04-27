@@ -1,16 +1,8 @@
-import { AppBar, Box, Button, Dialog, DialogProps, IconButton, Slide, Toolbar, Typography } from '@material-ui/core';
-import { TransitionProps } from '@material-ui/core/transitions/transition';
+import { AppBar, Box, Dialog, DialogProps, IconButton, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import { useFormDialogStyles } from '../styles/styles';
 import EmployeeForm from './EmployeeForm';
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const EmployeeFormDialog: React.FunctionComponent<DialogProps> = (props) => {
   const classes = useFormDialogStyles();
@@ -34,9 +26,6 @@ const EmployeeFormDialog: React.FunctionComponent<DialogProps> = (props) => {
                 </IconButton>
                 <Typography variant="h6">New Employee</Typography>
               </Box>
-              <Button autoFocus color="inherit" onClick={handleClose}>
-                save
-              </Button>
             </Box>
           </Toolbar>
         </AppBar>
