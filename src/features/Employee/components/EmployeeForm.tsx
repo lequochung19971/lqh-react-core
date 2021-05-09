@@ -1,26 +1,25 @@
 import { Box, Button, TextField } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useFormStyles } from '../styles/styles';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { Controller, useForm } from '@shared/hooks';
-import errrorMessages from '@shared/utils/errorMessages';
-
-// type EmployeeForm = Omit<EmployeeModel, '_id' | 'avatar' | 'fullName' | '_guid'>;
+import {
+  validationResolver,
+  createValidator,
+  createValidationForm,
+  ValidationContext,
+  createValidationContext,
+} from '@shared/utils/hookform/validation-resolver';
+import { Controller, useForm } from '@shared/utils/hookform/form';
 
 interface EmployeeForm {
   firstName: string;
   lastName: string;
   fullName: string;
   dob: string;
+  age?: number;
+  test: {
+    value: string;
+  }
 }
-
-const schema: any = yup.object().shape({
-  firstName: yup.string().required(errrorMessages.required),
-  lastName: yup.string().required(errrorMessages.required),
-  fullName: yup.string().required(errrorMessages.required),
-  dob: yup.string(),
-});
 
 const defaultValues = {
   firstName: '',
@@ -29,21 +28,52 @@ const defaultValues = {
   dob: '',
 };
 
+const required = createValidator<EmployeeForm, string>(function required(value) {
+  return {
+    type: 'required',
+    message: 'required',
+  };
+});
+
+const inValid = createValidator<EmployeeForm, string>(function inValid(_value: string) {
+  return {
+    type: 'inValid',
+    message: 'inValid',
+  };
+})
+
+export const validation = createValidationForm<EmployeeForm>({
+  firstName: [inValid, required],
+  lastName: [required],
+  fullName: [required],
+  dob: [required],
+});
 const EmployeeForm: React.FunctionComponent = () => {
   const classes = useFormStyles();
-  const { control, handleSubmit, watch, getErrorsMui, setValue, getValues } = useForm<EmployeeForm>({
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    getErrorsMui,
+    setValue,
+    getValues,
+    validationContext,
+  } = useForm<EmployeeForm, ValidationContext<EmployeeForm>>({
     defaultValues,
-    resolver: yupResolver(schema),
+    resolver: validationResolver(validation),
     mode: 'onChange',
+    context: createValidationContext(),
   });
 
   const onSubmit = (data: any) => {
     console.log(data);
   };
-
-  useEffect(() => {
-    setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`);
-  }, [watch('firstName'), watch('lastName')]);
+  console.log(validationContext);
+  
+  // useEffect(() => {
+  //   setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`);
+  // }, [watch('firstName'), watch('lastName')]);
 
   const onDobKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const regexNumber = /^[0-9]*$/;
@@ -180,8 +210,11 @@ const EmployeeForm: React.FunctionComponent = () => {
             <Button color="secondary" variant="contained" size="large">
               Cancel
             </Button>
-            <Button color="primary" variant="outlined" size="large">
-              Field Data
+            <Button color="primary" variant="outlined" size="large" onClick={() => validationContext?.clearValidators('firstName')}>
+              Clear Validator
+            </Button>
+            <Button color="primary" variant="outlined" size="large" onClick={() => validationContext?.setValidators('lastName', [inValid])}>
+              Set Validator
             </Button>
           </Box>
         </Box>
