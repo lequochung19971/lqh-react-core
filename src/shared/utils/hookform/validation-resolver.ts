@@ -286,7 +286,6 @@ const initValidationResolverRef = <TFormValue>(
   }
 };
 
-
 /**
 * Function that generates a Validation Resolver for React Hook Form
 * @author   hungle
