@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import { Departments } from '@shared/enums/Departments.enum';
-import { Positions } from '@shared/enums/Positions.enum';
+import { Departments } from '@shared/enums/departments.enum';
+import { Positions } from '@shared/enums/positions.enum';
 import { Expose } from 'class-transformer';
-import { BaseModel } from './Base.model';
+import { BaseModel } from './base.model';
 
 export class PositionModel extends BaseModel {
   @Expose()

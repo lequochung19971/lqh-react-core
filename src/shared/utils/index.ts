@@ -1,1 +1,1 @@
-export * from './context/context-factory';
+export * from './context/contextFactory';

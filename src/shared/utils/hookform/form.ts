@@ -15,6 +15,8 @@ export * from 'react-hook-form'
 interface UseAppFormReturn<TFieldValues extends FieldValues = FieldValues, TContext extends object = object> extends UseFormReturn<TFieldValues> {
   setValues: (data: TFieldValues) => void;
   getErrorsMui: (fieldName: string) => { error: boolean, helperText: string }
+  setReadOnly: (fieldName: string, value: boolean) => void;
+  setDisable: (fieldName: string, value: boolean) => void;
   validationContext: TContext | undefined;
 }
 
@@ -41,11 +43,60 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
     }
   }
 
+  const getCurrentHTMLElementRef = (fieldName: string): HTMLElement => {
+    const { fieldsRef } = formRef.control;
+    const pathRef = `${fieldName}._f.ref`
+    const ref: HTMLElement = get(fieldsRef.current, pathRef) as unknown as HTMLElement;
+    return ref;
+  }
+
+  const markReadOnly = (ref: HTMLElement, value: boolean) => {
+    type HTMLElementName = 'input' | 'textarea';
+    const htmlElements: HTMLElementName[] = ['input', 'textarea'];
+
+    for (const element of htmlElements) {
+      const eleRef = ref.querySelector(element);
+      if (eleRef) {
+        eleRef.readOnly = value;
+      }
+    }
+  }
+
+  const setReadOnly = (fieldName: string, value: boolean) => {
+    const ref: HTMLElement = getCurrentHTMLElementRef(fieldName);
+
+    if (!ref) return;
+
+    markReadOnly(ref, value);
+  }
+
+  const markDisabled = (ref: HTMLElement, value: boolean) => {
+    type HTMLElementName = 'input' | 'textarea';
+    const htmlElements: HTMLElementName[] = ['input', 'textarea'];
+
+    for (const element of htmlElements) {
+      const eleRef = ref.querySelector(element);
+      if (eleRef) {
+        eleRef.disabled = value;
+      }
+    }
+  }
+
+  const setDisable = (fieldName: string, value: boolean) => {
+    const ref: HTMLElement = getCurrentHTMLElementRef(fieldName);
+
+    if (!ref) return;
+
+    markDisabled(ref, value);
+  }
+
   return {
     ...formRef,
     setValues,
     getErrorsMui,
-    validationContext
+    validationContext,
+    setReadOnly,
+    setDisable,
   };
 }
 

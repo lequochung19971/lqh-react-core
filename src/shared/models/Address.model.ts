@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Expose, Type } from "class-transformer";
-import { BaseModel } from './Base.model';
+import { BaseModel } from './base.model';
 
 export class AddressModel extends BaseModel {
   @Expose()

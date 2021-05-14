@@ -71,7 +71,7 @@ export class FieldError {
   }
 }
 
-export class ValidationModel<TFormValue extends FormValueType = FormValueType> {
+export class ValidatorModel<TFormValue extends FormValueType = FormValueType> {
   private readonly _formValue: DeepReadonly<TFormValue>;
   private _path;
   readonly value;
@@ -187,7 +187,7 @@ const runValidators = <TFormValue>(
       const flattenedKeys = flattenObj(nextValues);
       runValidators<TNewValue>(ref, flattenedKeys, errros);
     } else {
-      const resolverRef = new ValidationModel<TFormValue>(ref, path, currentValue);
+      const resolverRef = new ValidatorModel<TFormValue>(ref, path, currentValue);
       for (const fn of currentValidator) {
         const valueValidation = fn.call(resolverRef, currentValue);
         if (valueValidation && valueValidation.hasOwnProperty('type')) {
@@ -202,11 +202,11 @@ const runValidators = <TFormValue>(
 /**
 * Function that creates a validator function with "this"
 * @author   hungle
-* @param    {(this: ValidationModel<TFormValue>, value: TFieldValue) => ValidationResult}  fn  A Validator Function (Only Normal Function)
+* @param    {(this: ValidatorModel<TFormValue>, value: TFieldValue) => ValidationResult}  fn  A Validator Function (Only Normal Function)
 * @return   {(value: TFieldValue) => ValidationResult} A Validator Function
 */
 export function createValidator<TFormValue extends FormValueType = FormValueType, TFieldValue = any>(
-  fn: (this: ValidationModel<TFormValue>, value: TFieldValue) => ValidationResult,
+  fn: (this: ValidatorModel<TFormValue>, value: TFieldValue) => ValidationResult,
 ): (value: TFieldValue) => ValidationResult {
   return fn;
 }

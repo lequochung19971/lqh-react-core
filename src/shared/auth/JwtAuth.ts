@@ -1,7 +1,7 @@
-import { HttpClient } from '@http/HttpClient';
+import { HttpClient } from '@http/httpClient';
 import { AuthLocalStorageKeys, AuthUrIs, TokenType } from '@shared/enums';
 import { IAuthToken, IJwtToken, ILoginParams } from '@shared/types';
-import { BaseAuth } from './BaseAuth';
+import { BaseAuth } from './baseAuth';
 
 export class JwtAuth extends BaseAuth {
   guid = new Date();

@@ -1,5 +1,5 @@
 // import { JwtAuth } from "core/auth/jwtAuth";
-import { HttpClient } from './HttpClient';
+import { HttpClient } from './httpClient';
 
 export function HttpInit (): void {
   HttpClient.httpConfig = {

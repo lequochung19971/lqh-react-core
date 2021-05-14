@@ -1,105 +1,85 @@
-import { Box, Button, TextField } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import { useFormStyles } from '../styles/styles';
 import {
   validationResolver,
-  createValidator,
   createValidationForm,
   ValidationContext,
   createValidationContext,
-} from '@shared/utils/hookform/validation-resolver';
+} from '@shared/utils/hookform/validationResolver';
 import { Controller, useForm } from '@shared/utils/hookform/form';
-
-interface EmployeeForm {
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  dob: string;
-  age?: number;
-  test: {
-    value: string;
-  }
-}
+import { IEmployeeForm } from '../types/employeeForm.interface';
+import { required } from '../validators/employee.validator';
+import { LqhButton } from '@shared/ui-elements';
+import { Box, Button, Checkbox, Grid, TextField } from '@material-ui/core';
+import dayjs from 'dayjs';
 
 const defaultValues = {
   firstName: '',
   lastName: '',
   fullName: '',
   dob: '',
+  age: '',
+  testField: '',
 };
 
-const required = createValidator<EmployeeForm, string>(function required(value) {
-  return {
-    type: 'required',
-    message: 'required',
-  };
-});
-
-const inValid = createValidator<EmployeeForm, string>(function inValid(_value: string) {
-  return {
-    type: 'inValid',
-    message: 'inValid',
-  };
-})
-
-export const validation = createValidationForm<EmployeeForm>({
-  firstName: [inValid, required],
+export const validation = createValidationForm<IEmployeeForm>({
+  firstName: [required],
   lastName: [required],
   fullName: [required],
   dob: [required],
+  age: [required]
 });
-const EmployeeForm: React.FunctionComponent = () => {
-  const classes = useFormStyles();
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    getErrorsMui,
-    setValue,
-    getValues,
-    validationContext,
-  } = useForm<EmployeeForm, ValidationContext<EmployeeForm>>({
+const EmployeeForm: React.FunctionComponent = () => {
+  const { control, handleSubmit, watch, getErrorsMui, setValue, getValues, setReadOnly, setDisable } = useForm<
+    IEmployeeForm,
+    ValidationContext<IEmployeeForm>
+  >({
     defaultValues,
     resolver: validationResolver(validation),
     mode: 'onChange',
     context: createValidationContext(),
   });
 
+  const dayLength = 2;
+  const monthLength = 5;
+  const dobLength = 10;
+
   const onSubmit = (data: any) => {
     console.log(data);
   };
-  console.log(validationContext);
-  
-  // useEffect(() => {
-  //   setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`);
-  // }, [watch('firstName'), watch('lastName')]);
+
+  const setFullName = () => {
+    setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`.trim());
+  };
 
   const onDobKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const regexNumber = /^[0-9]*$/;
-    const dayLength = 2;
-    const monthLength = 5;
+
 
     if (checkAllowKeyCode(event)) {
       return;
     }
 
-    if (!regexNumber.test(event.key)) {
+    const value = (event.target as HTMLInputElement).value;
+    if (!regexNumber.test(event.key) || value.length === dobLength) {
       event.preventDefault();
     }
 
-    const value = (event.target as HTMLInputElement).value;
     if (value.length === dayLength || value.length === monthLength) {
       (event.target as HTMLInputElement).value = value + '/';
     }
   };
 
   const onDobChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const dobLength = 10;
-    const value = event.target.value;
-
-    if (value.length <= dobLength) {
-      setValue('dob', event.target.value);
+    const { value } = event.target;
+    setValue('dob', value);
+    const now = dayjs(new Date());
+    if (value.length === dobLength) {
+      console.log(control);
+      const age = now.diff(value, 'year');
+      setValue('age', age.toString());
+      // setReadOnly('testField', true);
+      setDisable('testField', true);
     }
   };
 
@@ -125,98 +105,105 @@ const EmployeeForm: React.FunctionComponent = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" flexWrap="wrap" p="20px">
-          <Box display="flex" width="100%">
-            <Controller
-              name="firstName"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  {...getErrorsMui('firstName')}
-                  label="First Name"
-                  className={classes.textField}
-                  variant="outlined"
-                  fullWidth
-                  required
-                />
-              )}
-            />
-            <Controller
-              name="lastName"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  {...getErrorsMui('lastName')}
-                  label="Last Name"
-                  className={classes.textField}
-                  variant="outlined"
-                  fullWidth
-                />
-              )}
-            />
-            <Controller
-              name="fullName"
-              control={control}
-              render={({ field }) => (
-                <TextField {...field} label="Full Name" className={classes.textField} variant="outlined" fullWidth />
-              )}
-            />
-          </Box>
-          <Box display="flex" width="100%">
-            <Controller
-              name="dob"
-              {...getErrorsMui('dob')}
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  onKeyDown={onDobKeyDown}
-                  onChange={onDobChange}
-                  label="Date of Birth"
-                  className={classes.textField}
-                  variant="outlined"
-                  fullWidth
-                />
-              )}
-            />
-            <TextField label="Age" className={classes.textField} variant="outlined" fullWidth />
-          </Box>
-          <Box display="flex" width="100%">
-            <TextField label="Email" className={classes.textField} variant="outlined" fullWidth />
-            <TextField label="Phone" className={classes.textField} variant="outlined" fullWidth />
-          </Box>
-          <Box display="flex" width="100%">
-            <TextField label="Department" className={classes.textField} variant="outlined" fullWidth />
-            <TextField label="Position" className={classes.textField} variant="outlined" fullWidth />
-          </Box>
+        <Box p="50px">
+          <Grid container spacing={4} xs={8}>
+            <Grid item xs={4}>
+              <Controller
+                name="firstName"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    {...getErrorsMui('firstName')}
+                    onChange={setFullName}
+                    label="First Name"
+                    fullWidth
+                    required
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Controller
+                name="lastName"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    {...getErrorsMui('lastName')}
+                    onChange={setFullName}
+                    label="Last Name"
+                    fullWidth
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Controller
+                name="fullName"
+                control={control}
+                render={({ field }) => <TextField {...field} label="Full Name" fullWidth />}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Controller
+                name="dob"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    {...getErrorsMui('dob')}
+                    onKeyDown={onDobKeyDown}
+                    onChange={onDobChange}
+                    label="Date of Birth"
+                    fullWidth
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Controller
+                name="age"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    {...getErrorsMui('age')}
+                    label="Age"
+                    fullWidth
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField label="Email" fullWidth />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField label="Phone" fullWidth />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField label="Department" fullWidth />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField label="Position" fullWidth />
+            </Grid>
 
-          <Box display="flex" width="100%">
-            <TextField label="Password" className={classes.textField} variant="outlined" fullWidth />
-            <TextField
-              label="Confirm Password"
-              className={classes.textField}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-            />
-          </Box>
+            <Grid item xs={6}>
+              <TextField label="Password" fullWidth />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField label="Confirm Password" fullWidth />
+            </Grid>
 
-          <Box m="8px" mt="20px">
-            <Button type="submit" color="primary" variant="contained" size="large">
-              Save
-            </Button>
-            <Button color="secondary" variant="contained" size="large">
-              Cancel
-            </Button>
-            <Button color="primary" variant="outlined" size="large" onClick={() => validationContext?.clearValidators('firstName')}>
-              Clear Validator
-            </Button>
-            <Button color="primary" variant="outlined" size="large" onClick={() => validationContext?.setValidators('lastName', [inValid])}>
-              Set Validator
-            </Button>
-          </Box>
+            <Grid item xs={12}>
+              <LqhButton type="submit" color="primary" variant="contained" size="large" mr="10px">
+                Save
+              </LqhButton>
+              <LqhButton color="secondary" variant="contained" size="large">
+                Cancel
+              </LqhButton>
+            </Grid>
+          </Grid>
         </Box>
       </form>
     </>

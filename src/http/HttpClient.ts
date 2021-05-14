@@ -1,4 +1,4 @@
-import { HttpClientErrorModel } from '@shared/models/HttpClientError.model';
+import { HttpClientErrorModel } from '@shared/models/httpClientError.model';
 import axios from 'axios';
 import queryString from 'query-string';
 import {

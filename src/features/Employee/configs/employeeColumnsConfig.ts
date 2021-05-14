@@ -1,4 +1,4 @@
-import { EmployeeColumns } from "../types/EmployeeColumn.interface";
+import { EmployeeColumns } from "../types/employeeColumns.interface";
 
 const employeeColumnsConfig: EmployeeColumns[] = [
 	{

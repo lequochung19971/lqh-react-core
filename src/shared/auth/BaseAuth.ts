@@ -1,4 +1,4 @@
-import { HttpClient } from '@http/HttpClient';
+import { HttpClient } from '@http/httpClient';
 import { AuthLocalStorageKeys, AuthUrIs } from '@shared/enums';
 import { IAuthAdapter, IAuthToken, IBaseTokenResult, IChangePassword, IRegisterParams  } from '@shared/types';
 

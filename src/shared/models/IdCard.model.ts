@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Expose, Type } from 'class-transformer';
-import { Address } from './Address.model';
-import { BaseModel } from './Base.model';
+import { Address } from './address.model';
+import { BaseModel } from './base.model';
 
 export class IDCardModel extends BaseModel {
   @Expose()
