@@ -8,6 +8,5 @@ export const required = createValidator<IEmployeeForm, any>(function required(va
 			message: 'Required',
 		};
 	}
-
   return null;
 });

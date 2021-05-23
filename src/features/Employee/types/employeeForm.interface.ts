@@ -4,5 +4,11 @@ export interface IEmployeeForm {
   fullName: string;
   dob: string;
   age: string;
-  testField: string;
+  test: {
+    value: string;
+  }[];
+  test2: {
+    value1: string,
+    value2: string,
+  }
 }

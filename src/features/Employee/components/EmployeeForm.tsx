@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import {
-  validationResolver,
   createValidationForm,
   ValidationContext,
-  createValidationContext,
 } from '@shared/utils/hookform/validationResolver';
-import { Controller, useForm } from '@shared/utils/hookform/form';
+import { Controller, useFieldArray, useForm } from '@shared/utils/hookform/form';
 import { IEmployeeForm } from '../types/employeeForm.interface';
 import { required } from '../validators/employee.validator';
 import { LqhButton } from '@shared/ui-elements';
-import { Box, Button, Checkbox, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField } from '@material-ui/core';
 import dayjs from 'dayjs';
 
 const defaultValues = {
@@ -18,43 +16,65 @@ const defaultValues = {
   fullName: '',
   dob: '',
   age: '',
-  testField: '',
+  test: [],
+  test2: {
+    value1: '',
+    value2: '',
+  }
 };
 
-export const validation = createValidationForm<IEmployeeForm>({
+export const validators = createValidationForm<IEmployeeForm>({
   firstName: [required],
   lastName: [required],
   fullName: [required],
   dob: [required],
-  age: [required]
+  age: [required],
+  test: [
+    {
+      value: [required]
+    }
+  ],
+  test2: {
+    value1: [required]
+  }
 });
 
 const EmployeeForm: React.FunctionComponent = () => {
-  const { control, handleSubmit, watch, getErrorsMui, setValue, getValues, setReadOnly, setDisable } = useForm<
+  const { control, handleSubmit, watch, getErrorsMui, setValue, getValues, setReadOnly, setDisable, validationContext, disabledFields, readOnlyFields } = useForm<
     IEmployeeForm,
     ValidationContext<IEmployeeForm>
   >({
     defaultValues,
-    resolver: validationResolver(validation),
+    validators,
     mode: 'onChange',
-    context: createValidationContext(),
   });
+
+  const { fields, append, remove } = useFieldArray({ control, name: 'test' });
 
   const dayLength = 2;
   const monthLength = 5;
   const dobLength = 10;
 
+  useEffect(() => {
+    console.log('validationContext', validationContext);
+    console.log('disabledFields', disabledFields);
+    console.log('readOnlyFields', readOnlyFields); 
+  })
+
   const onSubmit = (data: any) => {
     console.log(data);
   };
 
-  const setFullName = () => {
-    setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`.trim());
-  };
+  useEffect(() => {
+    const setFullName = () => {
+      setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`.trim());
+    };
+    setFullName();
+  }, [watch('firstName'), watch('lastName')])
+  
 
   const onDobKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const regexNumber = /^[0-9]*$/;
-
 
     if (checkAllowKeyCode(event)) {
       return;
@@ -78,8 +98,8 @@ const EmployeeForm: React.FunctionComponent = () => {
       console.log(control);
       const age = now.diff(value, 'year');
       setValue('age', age.toString());
-      // setReadOnly('testField', true);
-      setDisable('testField', true);
+      setReadOnly('age', true);
+      setDisable('age', true);
     }
   };
 
@@ -111,16 +131,17 @@ const EmployeeForm: React.FunctionComponent = () => {
               <Controller
                 name="firstName"
                 control={control}
-                render={({ field }) => (
-                  <TextField
+                render={({ field }) => {
+                  return (
+                    <TextField
                     {...field}
                     {...getErrorsMui('firstName')}
-                    onChange={setFullName}
                     label="First Name"
                     fullWidth
                     required
                   />
-                )}
+                  )
+                }}
               />
             </Grid>
             <Grid item xs={4}>
@@ -131,7 +152,6 @@ const EmployeeForm: React.FunctionComponent = () => {
                   <TextField
                     {...field}
                     {...getErrorsMui('lastName')}
-                    onChange={setFullName}
                     label="Last Name"
                     fullWidth
                   />
@@ -165,14 +185,7 @@ const EmployeeForm: React.FunctionComponent = () => {
               <Controller
                 name="age"
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    {...getErrorsMui('age')}
-                    label="Age"
-                    fullWidth
-                  />
-                )}
+                render={({ field }) => <TextField {...field} {...getErrorsMui('age')} label="Age" fullWidth />}
               />
             </Grid>
             <Grid item xs={6}>
@@ -194,6 +207,25 @@ const EmployeeForm: React.FunctionComponent = () => {
             <Grid item xs={6}>
               <TextField label="Confirm Password" fullWidth />
             </Grid>
+            {fields.map((f, index) => {
+              return (
+                <>
+                  <Grid key={index} item xs={9}>
+                    <Controller
+                      name={`test.${index}.value` as `test.${number}.value`}
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => <TextField {...field} label="value" fullWidth />}
+                    />
+                  </Grid>
+                  <Grid key={index} item xs={3}>
+                    <LqhButton color="secondary" variant="contained" size="large" onClick={() => remove(index)}>
+                      Remove
+                    </LqhButton>
+                  </Grid>
+                </>
+              );
+            })}
 
             <Grid item xs={12}>
               <LqhButton type="submit" color="primary" variant="contained" size="large" mr="10px">
@@ -201,6 +233,16 @@ const EmployeeForm: React.FunctionComponent = () => {
               </LqhButton>
               <LqhButton color="secondary" variant="contained" size="large">
                 Cancel
+              </LqhButton>
+              <LqhButton
+                type="button"
+                color="default"
+                variant="contained"
+                size="large"
+                ml="10px"
+                onClick={() => append({ value: '123' })}
+              >
+                Append Field
               </LqhButton>
             </Grid>
           </Grid>

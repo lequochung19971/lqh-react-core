@@ -1,42 +1,33 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { get, has, isEmpty, set } from 'lodash';
+import { difference, get, has, set } from 'lodash';
 import { useMemo, useRef } from 'react';
-import { Resolver, FieldError as YupFieldError, DeepMap } from 'react-hook-form';
+import { Resolver, FieldError, DeepMap, FieldValues } from 'react-hook-form';
+import { DeepReadonly, ValidationResult, ValidatorFn, ValidatorFnAllType, ValidatorFnConfigs } from './types';
+import { clearObjectKeepReference, flattenObj } from './utils';
 
-type DeepReadonly<T> =
-    T extends (infer R)[] ? DeepReadonlyArray<R> :
-    T extends Function ? T :
-    T extends object ? DeepReadonlyObject<T> :
-    T;
-type DeepReadonlyArray<T> = ReadonlyArray<DeepReadonly<T>>;
-type DeepReadonlyObject<T> = {
-  readonly [P in keyof T]: DeepReadonly<T[P]>;
-};
-
-export type FormValueType = Record<string, any>;
-export type ValidatorFn<TFieldValue extends any = any> = (value: TFieldValue) => ValidationResult;
-export type ValidationResult = YupFieldError | null | undefined | false;
-export type ValidatorFnConfigs<TFormValue extends FormValueType = FormValueType> = {
-  [P in keyof TFormValue]?: ValidatorFn<TFormValue[P]>[];
-};
-
-export class ValidationContext<TFormValue> {
-  public validators: ValidatorFnConfigs<TFormValue> = {};
+export class ValidationContext<TFieldValues> {
+  public validators: ValidatorFnConfigs<TFieldValues> = {};
 
   public getValidator<TFieldValue extends any = any>(path: string): ValidatorFn<TFieldValue>[] {
     return get(this.validators, path);
   }
 
-  public setValidators<TFieldValue extends any = any>(path: string, newValidator: ValidatorFn<TFieldValue>[] | ValidatorFn<TFieldValue>): void {
+  public setValidators<TFieldValue extends any = any>(
+    path: string,
+    newValidator: ValidatorFn<TFieldValue>[] | ValidatorFn<TFieldValue>,
+  ): void {
     const currentValidators = get(this.validators, path) ?? [];
 
-    const removeDuplicate = (currentV: ValidatorFn<TFieldValue>[], newV: ValidatorFn<TFieldValue>[]): ValidatorFn<TFieldValue>[] => {
-      const setRef = new Set([...currentV, ...newV])
+    const removeDuplicate = (
+      currentV: ValidatorFn<TFieldValue>[],
+      newV: ValidatorFn<TFieldValue>[],
+    ): ValidatorFn<TFieldValue>[] => {
+      const setRef = new Set([...currentV, ...newV]);
       return [...setRef];
-    }
+    };
 
-    if(Array.isArray(newValidator)) {
+    if (Array.isArray(newValidator)) {
       const removedDuplicateValidators = removeDuplicate(currentValidators, newValidator);
       set(this.validators, path, removedDuplicateValidators);
     } else {
@@ -50,39 +41,30 @@ export class ValidationContext<TFormValue> {
   }
 }
 
-export class ValidationResolverRef<TFormValue extends FormValueType = FormValueType> {
-  public formValue: TFormValue;
-  public flattenedObjectKeys: string[];
-  public validators: ValidatorFnConfigs<TFormValue>;
+export class ValidationResolverRef<TFieldValues extends FieldValues = FieldValues> {
+  public formValue: TFieldValues;
+  public fieldNames: string[];
+  public validators: ValidatorFnConfigs<TFieldValues>;
 
-  constructor(props: ValidationResolverRef<TFormValue>) {
+  constructor(props: ValidationResolverRef<TFieldValues>) {
     this.formValue = props.formValue;
-    this.flattenedObjectKeys = props.flattenedObjectKeys;
+    this.fieldNames = props.fieldNames;
     this.validators = props.validators;
-  }
-};
-
-export class FieldError {
-  type: string;
-  message: string;
-  constructor(type: string, message: string) {
-    this.type = type;
-    this.message = message;
   }
 }
 
-export class ValidatorModel<TFormValue extends FormValueType = FormValueType> {
-  private readonly _formValue: DeepReadonly<TFormValue>;
+export class ValidatorModel<TFieldValues extends FieldValues = FieldValues> {
+  private readonly _formValue: DeepReadonly<TFieldValues>;
   private _path;
   readonly value;
 
-  constructor(ref: { current: ValidationResolverRef<TFormValue> }, path: string, value: FormValueType) {
-    this._formValue = Object.freeze(ref.current.formValue) as DeepReadonly<TFormValue>;
+  constructor(ref: React.MutableRefObject<ValidationResolverRef<TFieldValues>>, path: string, value: FieldValues) {
+    this._formValue = Object.freeze(ref.current.formValue) as DeepReadonly<TFieldValues>;
     this._path = path;
     this.value = value;
   }
 
-  get formValue(): DeepReadonly<TFormValue> {
+  get formValue(): DeepReadonly<TFieldValues> {
     return this._formValue;
   }
 
@@ -93,65 +75,26 @@ export class ValidatorModel<TFormValue extends FormValueType = FormValueType> {
     return get(this._formValue, parentPath);
   }
 
-  createError({type, message}: FieldError): FieldError {
-    return new FieldError(type, message);
+  createError({ type, message }: FieldError): FieldError {
+    return { type, message };
   }
 }
 
 /**
-* Function that creates a memorized validation context for context property in useForm (React Hook Form).
-* @author   hungle
-* @returns  {ValidationContext<TFormValue>}  memorized validation context
-*/
-export const createValidationContext = <TFormValue>(): ValidationContext<TFormValue> => {
-  return useMemo(() => new ValidationContext<TFormValue>(), []);
-}
-
-/**
-* Function that implements to flatten object by recursion.
-* @author   hungle
-* @param    {any}  currentNode  Current Object
-* @param    {string[]}  target  Flattened Result
-* @param    {string | undefined}  flattenedKey  Flattened Key
-*/
-const traverseAndFlatten = (currentNode: any, target: string[], flattenedKey?: string | undefined) => {
-  for (const key in currentNode) {
-    if (currentNode.hasOwnProperty(key)) {
-      let newKey;
-      if (flattenedKey === undefined) {
-        newKey = key;
-      } else {
-        newKey = flattenedKey + '.' + key;
-      }
-
-      const value = currentNode[key];
-      if (typeof value === 'object') {
-        traverseAndFlatten(value, target, newKey);
-      } else {
-        target.push(newKey);
-      }
-    }
-  }
+ * Function that creates a memorized validation context for context property in useForm (React Hook Form).
+ * @author   hungle
+ * @returns  {ValidationContext<TFieldValues>}  memorized validation context
+ */
+export const createValidationContext = <TFieldValues>(): ValidationContext<TFieldValues> => {
+  return useMemo(() => new ValidationContext<TFieldValues>(), []);
 };
 
 /**
-* Function that flatten object.
-* @author   hungle
-* @param    {unknown}  obj  Object
-* @returns  {string[]}  Object keys
-*/
-const flattenObj = (obj: unknown): string[] => {
-  const flattenedObject: string[] = [];
-  traverseAndFlatten(obj, flattenedObject);
-  return flattenedObject;
-};
-
-/**
-* Function that generates path to get configured validator functions.
-* @author   hungle
-* @param    {string[]}  paths  Flattened object keys
-* @returns  {string}  Path of configured validation function
-*/
+ * Function that generates path to get configured validator functions.
+ * @author   hungle
+ * @param    {string[]}  paths  Flattened object keys
+ * @returns  {string}  Path of configured validation function
+ */
 const generateValidatorPath = (path: string): string => {
   const regex1 = /([\.\[]+)(\b[0-9]{1,61})([\]\.]+)/g; //.[number].
   const regex2 = /(\.[0-9]+)$/g; //.[number]
@@ -164,30 +107,32 @@ const generateValidatorPath = (path: string): string => {
 };
 
 /**
-* Function that runs validator functions when any fields or form are detected change.
-* @author   hungle
-* @param    {{ current: ValidationResolverRef<TFormValue> }}  ref  A Relsover Reference to save necessary informations for handling during a form process
-* @param    {string[]}  paths  Flattened object keys
-* @param    errros  Errors
-*/
-const runValidators = <TFormValue>(
-  ref: { current: ValidationResolverRef<TFormValue> },
+ * Function that runs validator functions when any fields or form are detected change.
+ * @author   hungle
+ * @param    {React.MutableRefObject<ValidationResolverRef<TFieldValues>>}  ref  A Relsover Reference to save necessary informations for handling during a form process
+ * @param    {string[]}  paths  Flattened object keys
+ * @param    errros  Errors
+ */
+const executeValidators = <TFieldValues>(
+  ref: React.MutableRefObject<ValidationResolverRef<TFieldValues>>,
   paths: string[],
   errros = {},
 ) => {
   for (const path of paths) {
-    const currentValue: TFormValue = get(ref.current.formValue, path);
+    const currentValue: TFieldValues = get(ref.current.formValue, path);
     type TNewValue = typeof currentValue;
 
     const currentValidator: ValidatorFn<TNewValue>[] = get(ref.current.validators, path);
+    if (!currentValidator?.length) break;
+
     const isObject = typeof currentValue === 'object';
 
     if (isObject) {
       const nextValues = set({}, path, currentValue);
       const flattenedKeys = flattenObj(nextValues);
-      runValidators<TNewValue>(ref, flattenedKeys, errros);
+      executeValidators<TNewValue>(ref, flattenedKeys, errros);
     } else {
-      const resolverRef = new ValidatorModel<TFormValue>(ref, path, currentValue);
+      const resolverRef = new ValidatorModel<TFieldValues>(ref, path, currentValue);
       for (const fn of currentValidator) {
         const valueValidation = fn.call(resolverRef, currentValue);
         if (valueValidation && valueValidation.hasOwnProperty('type')) {
@@ -200,60 +145,64 @@ const runValidators = <TFormValue>(
 };
 
 /**
-* Function that creates a validator function with "this"
-* @author   hungle
-* @param    {(this: ValidatorModel<TFormValue>, value: TFieldValue) => ValidationResult}  fn  A Validator Function (Only Normal Function)
-* @return   {(value: TFieldValue) => ValidationResult} A Validator Function
-*/
-export function createValidator<TFormValue extends FormValueType = FormValueType, TFieldValue = any>(
-  fn: (this: ValidatorModel<TFormValue>, value: TFieldValue) => ValidationResult,
+ * Function that creates a validator function with "this"
+ * @author   hungle
+ * @param    {(this: ValidatorModel<TFieldValues>, value: TFieldValue) => ValidationResult}  fn  A Validator Function (Only Normal Function)
+ * @return   {(value: TFieldValue) => ValidationResult} A Validator Function
+ */
+export function createValidator<TFieldValues extends FieldValues = FieldValues, TFieldValue = any>(
+  fn: (this: ValidatorModel<TFieldValues>, value: TFieldValue) => ValidationResult,
 ): (value: TFieldValue) => ValidationResult {
   return fn;
 }
 
 /**
-* Function that creates and check A Validation Form to pass into "validationResolver" function
-* @author   hungle
-* @param    {ValidatorFnConfigs<TFormValue>}  validatorFnConfigs  Configured Validator Functions
-* @return   {ValidatorFnConfigs<TFormValue>} Configured Validator Functions
-*/
-export const createValidationForm = <TFormValue extends FormValueType = FormValueType>(validatorFnConfigs: ValidatorFnConfigs<TFormValue>): ValidatorFnConfigs<TFormValue> => {
+ * Function that creates and validate A Validation Form to pass into "validationResolver" function
+ * @author   hungle
+ * @param    {ValidatorFnConfigs<TFieldValues>}  validatorFnConfigs  Configured Validator Functions
+ * @return   {ValidatorFnConfigs<TFieldValues>} Configured Validator Functions
+ */
+export const createValidationForm = <TFieldValues extends FieldValues = FieldValues>(
+  validatorFnConfigs: ValidatorFnConfigs<TFieldValues>,
+): ValidatorFnConfigs<TFieldValues> => {
   return validatorFnConfigs;
-}
+};
 
 /**
-* Function that init resolver references
-* @author   hungle
-* @param    {string[]}  paths  Flattened object keys
-* @param    {TFormValue}  formValue  Form value
-* @param    {ValidatorFnConfigs}  configedValidators  Configured validation functions
-* @param    {ValidatorFnConfigs<TFormValue>}  target  Validator functions for handling
-*/
-const initValidators = <TFormValue extends FormValueType = FormValueType>(
+ * Function that load resolver references
+ * @author   hungle
+ * @param    {string[]}  paths  Flattened object keys
+ * @param    {TFieldValues}  formValue  Form value
+ * @param    {ValidatorFnConfigs}  configedValidators  Configured validation functions
+ * @param    {ValidatorFnConfigs<TFieldValues>}  target  Validator functions for handling
+ */
+const loadValidators = <TFieldValues extends FieldValues = FieldValues>(
   paths: string[],
-  formValue: TFormValue,
-  configedValidators: ValidatorFnConfigs,
-  target: ValidatorFnConfigs<TFormValue> = {},
+  formValue: TFieldValues,
+  configedValidators: ValidatorFnConfigs<TFieldValues>,
+  target: ValidatorFnConfigs<TFieldValues> = {},
 ) => {
+  clearObjectKeepReference(target);
   for (const path of paths) {
-    const currentValue = get(formValue, path);
-    const isNotObject = typeof currentValue !== 'object';
+    const currenTFieldValues = get(formValue, path);
+    const isNotObject = typeof currenTFieldValues !== 'object';
 
     if (isNotObject) {
+      // New validators
       const configedValidatorPath = generateValidatorPath(path);
-      const hasConfigedValidators = has(configedValidators, configedValidatorPath) && !!get(configedValidators, configedValidatorPath)?.length;
+      const newValidators: ValidatorFnAllType<TFieldValues> = get(
+        configedValidators,
+        configedValidatorPath,
+      ) as ValidatorFnAllType<TFieldValues>;
+      const hasConfigedValidators = has(configedValidators, configedValidatorPath) && !!newValidators?.length;
 
-      const currentValidators = get(target, path) ?? [];
-      const isNotGenerated = !has(target, path) || !currentValidators.length;
+      const currentValidators: ValidatorFnAllType<TFieldValues> =
+        get(target, path) ?? ([] as ValidatorFnAllType<TFieldValues>);
 
-      if (isNotGenerated && hasConfigedValidators) {
-        const newValidators = get(configedValidators, configedValidatorPath);
-        set(target, path, newValidators);
-      } else {
-        const newValidators = get(configedValidators, configedValidatorPath);
-        const mergedValidators = [...(currentValidators ?? []), ...(newValidators ?? [])];
-        const removedDuplicateValidators = new Set(mergedValidators);
-        set(target, path, [...removedDuplicateValidators]);
+      if (Array.isArray(newValidators) && Array.isArray(currentValidators)) {
+        if (hasConfigedValidators) {
+          set(target, path, newValidators);
+        }
       }
     }
   }
@@ -261,64 +210,89 @@ const initValidators = <TFormValue extends FormValueType = FormValueType>(
 };
 
 /**
-* Function that init resolver references
-* @author   hungle
-* @param    {{ current: ValidationResolverRef<TFormValue> }}  ref  A Relsover Reference to save necessary informations for handling during a form process
-* @param    {TFormValue}  formValue   Form value
-* @param    {ValidatorFnConfigs<TFormValue>}  configedValidators   Configured validation functions
-*/
-const initValidationResolverRef = <TFormValue>(
-  ref: { current: ValidationResolverRef<TFormValue> },
-  formValue: TFormValue,
-  configedValidators: ValidatorFnConfigs<TFormValue>,
+ * Function that load resolver references
+ * @author   hungle
+ * @param    {React.MutableRefObject<ValidationResolverRef<TFieldValues>>}  ref  A Relsover Reference to save necessary informations for handling during a form process
+ * @param    {TFieldValues}  formValue   Form value
+ * @param    {ValidatorFnConfigs<TFieldValues>}  validatorFnConfigs   Configured validation functions
+ * @param    {string[]}  fieldNames   Name of fields in hook form
+ */
+const loadValidationResolverRef = <TFieldValues>(
+  ref: React.MutableRefObject<ValidationResolverRef<TFieldValues>>,
+  formValue: TFieldValues,
+  validatorFnConfigs: ValidatorFnConfigs<TFieldValues>,
+  fieldNames: string[],
 ) => {
-  const flattenedObjectKeys = flattenObj(formValue);
   ref.current.formValue = formValue;
-
-  if (ref.current.flattenedObjectKeys.length !== flattenedObjectKeys.length) {
-    ref.current.flattenedObjectKeys = flattenedObjectKeys;
-    ref.current.validators = initValidators(
-      flattenedObjectKeys,
+  const diff1 = difference(fieldNames, ref.current.fieldNames);
+  const diff2 = difference(ref.current.fieldNames, fieldNames);
+  if (diff1.length || diff2.length) {
+    ref.current.fieldNames = fieldNames;
+    ref.current.validators = loadValidators<TFieldValues>(
+      ref.current.fieldNames,
       ref.current.formValue,
-      configedValidators,
+      validatorFnConfigs,
       ref.current.validators,
     );
   }
 };
 
 /**
-* Function that generates a Validation Resolver for React Hook Form
-* @author   hungle
-* @param    {ValidatorFnConfigs<TFormValue>}  validators  Configured Validator Functions
-* @return   {Resolver<TFormValue, ValidationContext<TFormValue>>} Resolver of a Hook Form
-*/
-export const validationResolver = <TFormValue extends FormValueType = FormValueType> (
-  validators: ValidatorFnConfigs<TFormValue>,
-): Resolver<TFormValue, ValidationContext<TFormValue>> => {
+ * Function that load validation context
+ * @author   hungle
+ * @param    {React.MutableRefObject<ValidationResolverRef<TFieldValues>>}  ref  A Relsover Reference to save necessary informations for handling during a form process
+ * @param    {ValidationContext<TFieldValues> | undefined}  context   Validation context
+ */
+const loadValidationContext = <TFieldValues>(
+  ref: React.MutableRefObject<ValidationResolverRef<TFieldValues>>,
+  context: ValidationContext<TFieldValues> | undefined,
+) => {
+  if (context instanceof ValidationContext && !(context.validators === ref.current.validators)) {
+    context.validators = ref.current.validators;
+  }
+};
 
-  const ref = useRef(new ValidationResolverRef<TFormValue>({
-    formValue: {} as TFormValue,
-    flattenedObjectKeys: [] as string[],
-    validators: {} as ValidatorFnConfigs<TFormValue>,
-  }));
+/**
+ * Function that generates a Validation Resolver for React Hook Form
+ * @author   hungle
+ * @param    {ValidatorFnConfigs<TFieldValues>}  validatorFnConfigs  Configured Validator Functions
+ * @return   {Resolver<TFieldValues, ValidationContext<TFieldValues>>} Resolver of a Hook Form
+ */
+export const validationResolver = <TFieldValues extends FieldValues = FieldValues>(
+  validatorFnConfigs: ValidatorFnConfigs<TFieldValues>,
+  fieldNames: React.MutableRefObject<string[]>,
+  validationContext: ValidationContext<TFieldValues>,
+): Resolver<TFieldValues, ValidationContext<TFieldValues>> => {
+  const ref = useRef(
+    new ValidationResolverRef<TFieldValues>({
+      formValue: {} as TFieldValues,
+      fieldNames: [] as string[],
+      validators: {} as ValidatorFnConfigs<TFieldValues>,
+    }),
+  );
 
-  const resolver: Resolver<TFormValue, ValidationContext<TFormValue>> = (values, context, options) => {
-    if (context instanceof ValidationContext && !(context.validators === ref.current.validators)) {
-      if (isEmpty(context.validators)) {
-        context.validators = ref.current.validators;
-      } else {
-        ref.current.validators = context.validators;
-      }
-    }
+  if (fieldNames.current.length) {
+    loadValidationContext(ref, validationContext);
+    loadValidationResolverRef<TFieldValues>(
+      ref,
+      ref.current.formValue as TFieldValues,
+      validatorFnConfigs,
+      fieldNames.current,
+    );
+  }
 
-    initValidationResolverRef<TFormValue>(ref, values as TFormValue, validators);
+  const resolver: Resolver<TFieldValues, ValidationContext<TFieldValues>> = (values, context, options) => {
+    loadValidationContext(ref, context);
+    loadValidationResolverRef<TFieldValues>(ref, values as TFieldValues, validatorFnConfigs, fieldNames.current);
 
-    const errors: DeepMap<TFormValue, FieldError> = {};
+    const errors: DeepMap<TFieldValues, FieldError> = {};
 
     if (options.names) {
-      runValidators<TFormValue>(ref, options.names, errors);
+      // Execute for only 1 field
+      executeValidators<TFieldValues>(ref, options.names, errors);
     } else {
-      runValidators<TFormValue>(ref, ref.current.flattenedObjectKeys, errors);
+      // Execute for many fields
+      executeValidators<TFieldValues>(ref, ref.current.fieldNames, errors);
     }
 
     return { values, errors };
