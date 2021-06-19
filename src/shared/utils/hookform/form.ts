@@ -38,7 +38,7 @@ const getFieldsNameFromFieldsRef = (fieldsRef: Partial<Record<string, Field>>): 
   return fieldNames;
 };
 
-const forFieldElement = (
+const forEachFieldElement = (
   parentElementRef: HTMLElement,
   callback: (elementRef: HTMLInputElement | HTMLTextAreaElement, elementName: string) => void,
 ) => {
@@ -90,17 +90,15 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
 
   const disabledFieldsRef = useRef({});
   const readOnlyFieldsRef = useRef({});
-  const { validators, ...originalFormProps } = props;
   const fieldNamesRef = useRef([] as string[]);
-  const validationContext = createValidationContext();
+
+  const { validators, ...originalFormProps } = props;
+  const validationContext = createValidationContext<TFieldValues>();
 
   const formRef = useOriginalForm<TFieldValues, TContext>({
     ...originalFormProps,
-    resolver: validators
-      ? (validationResolver<TFieldValues>(validators, fieldNamesRef, validationContext) as Resolver<
-          TFieldValues,
-          object
-        >)
+    resolver: validators  // if validators => init customed resolver <---> if not => using original resolver.
+      ? validationResolver<TFieldValues>(validators, fieldNamesRef, validationContext) as Resolver<TFieldValues, object>
       : originalFormProps.resolver,
     context: validators ? (validationContext as TContext) : originalFormProps.context,
   });
@@ -124,7 +122,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
       for (const fieldName of fieldNamesRef.current) {
         const elementRef = getCurrentHTMLElementRef<TFieldValues>(fieldName, formRef);
         if (isLiveInDOM(elementRef)) {
-          forFieldElement(elementRef, (el) => {
+          forEachFieldElement(elementRef, (el) => {
             set(target, fieldName, el.disabled);
           });
         }
@@ -137,7 +135,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
       for (const fieldName of fieldNamesRef.current) {
         const elementRef = getCurrentHTMLElementRef<TFieldValues>(fieldName, formRef);
         if (isLiveInDOM(elementRef)) {
-          forFieldElement(elementRef, (el) => {
+          forEachFieldElement(elementRef, (el) => {
             set(target, fieldName, el.readOnly);
           });
         }
@@ -156,9 +154,9 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
     }
   };
 
-  const markReadOnly = (fieldName: string, parentElement: HTMLElement, value: boolean) => {
+  const doSetReadOnly = (fieldName: string, parentElement: HTMLElement, value: boolean) => {
     const target = { ...readOnlyFields };
-    forFieldElement(parentElement, (element) => {
+    forEachFieldElement(parentElement, (element) => {
       element.readOnly = value;
       set(target, fieldName, value);
       setReadOnlyFields(target);
@@ -170,12 +168,12 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
 
     if (!ref) return;
 
-    markReadOnly(fieldName, ref, value);
+    doSetReadOnly(fieldName, ref, value);
   };
 
-  const markDisabled = (fieldName: string, parentElement: HTMLElement, value: boolean) => {
+  const doSetDisabled = (fieldName: string, parentElement: HTMLElement, value: boolean) => {
     const target = { ...disabledFields };
-    forFieldElement(parentElement, (element) => {
+    forEachFieldElement(parentElement, (element) => {
       element.disabled = value;
       set(target, fieldName, value);
       setDisabledFields(target);
@@ -187,7 +185,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
 
     if (!ref) return;
 
-    markDisabled(fieldName, ref, value);
+    doSetDisabled(fieldName, ref, value);
   };
 
   const getErrorsMui = (fieldName: string) => {
@@ -200,11 +198,11 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
 
   return {
     ...formRef,
-    setValues,
-    getErrorsMui,
     validationContext,
+    setValues,
     setReadOnly,
     setDisable,
+    getErrorsMui,
     disabledFields,
     readOnlyFields,
   };

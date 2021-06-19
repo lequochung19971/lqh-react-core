@@ -31,11 +31,10 @@ export type ValidatorFnAllType<TFieldValues extends FieldValues = FieldValues> =
   | ValidatorFnObject<TFieldValues[string]>
   | ValidatorFn<TFieldValues[string]>[];
 export type ValidatorFnConfigs<TFieldValues extends FieldValues = FieldValues> = {
-  [P in keyof TFieldValues]?: TFieldValues[P] extends (infer R)[]
-    ? ValidatorFnArray<R>
-    : TFieldValues[P] extends object
-    ? ValidatorFnObject<TFieldValues[P]>
-    : ValidatorFn<TFieldValues[P]>[];
+  [P in keyof TFieldValues]?: 
+    TFieldValues[P] extends (infer R)[] ? ValidatorFnArray<R> : // Is Array
+    TFieldValues[P] extends object ? ValidatorFnObject<TFieldValues[P]> : // Is Object
+    ValidatorFn<TFieldValues[P]>[]; // Is Fn
 };
 
 /**

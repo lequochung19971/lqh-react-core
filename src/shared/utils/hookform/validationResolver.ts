@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { difference, get, has, isEqual, set } from 'lodash';
+import { get, has, isEqual, set } from 'lodash';
 import { useMemo, useRef } from 'react';
 import { Resolver, FieldError, DeepMap, FieldValues } from 'react-hook-form';
 import { DeepReadonly, ValidationResult, ValidatorFn, ValidatorFnAllType, ValidatorFnConfigs } from './types';
 import { clearObjectKeepReference, flattenObj } from './utils';
 
+/**
+ * ValidationContext saves the validation infos that to public for component.
+ */
 export class ValidationContext<TFieldValues> {
   public validators: ValidatorFnConfigs<TFieldValues> = {};
 
@@ -184,8 +187,8 @@ const loadValidators = <TFieldValues extends FieldValues = FieldValues>(
 ) => {
   clearObjectKeepReference(target);
   for (const path of paths) {
-    const currenTFieldValues = get(formValue, path);
-    const isNotObject = typeof currenTFieldValues !== 'object';
+    const currenFieldValues = get(formValue, path);
+    const isNotObject = typeof currenFieldValues !== 'object';
 
     if (isNotObject) {
       // New validators
@@ -224,7 +227,9 @@ const loadValidationResolverRef = <TFieldValues>(
   fieldNames: string[],
 ) => {
   ref.current.formValue = formValue;
-  const isFieldsRefChanged = !isEqual(fieldNames, ref.current.fieldNames)
+  const isFieldsRefChanged = !isEqual(fieldNames, ref.current.fieldNames);
+
+  // If fields are changed or not inited, validators of fields will be loaded. 
   if (isFieldsRefChanged) {
     ref.current.fieldNames = fieldNames;
     ref.current.validators = loadValidators<TFieldValues>(
@@ -259,7 +264,7 @@ const loadValidationContext = <TFieldValues>(
  */
 export const validationResolver = <TFieldValues extends FieldValues = FieldValues>(
   validatorFnConfigs: ValidatorFnConfigs<TFieldValues>,
-  fieldNames: React.MutableRefObject<string[]>,
+  fieldNamesRef: React.MutableRefObject<string[]>,
   validationContext: ValidationContext<TFieldValues>,
 ): Resolver<TFieldValues, ValidationContext<TFieldValues>> => {
   const ref = useRef(
@@ -270,19 +275,19 @@ export const validationResolver = <TFieldValues extends FieldValues = FieldValue
     }),
   );
 
-  if (fieldNames.current.length) {
+  if (fieldNamesRef.current.length) {
     loadValidationContext(ref, validationContext);
     loadValidationResolverRef<TFieldValues>(
       ref,
       ref.current.formValue as TFieldValues,
       validatorFnConfigs,
-      fieldNames.current,
+      fieldNamesRef.current,
     );
   }
 
   const resolver: Resolver<TFieldValues, ValidationContext<TFieldValues>> = (values, context, options) => {
     loadValidationContext(ref, context);
-    loadValidationResolverRef<TFieldValues>(ref, values as TFieldValues, validatorFnConfigs, fieldNames.current);
+    loadValidationResolverRef<TFieldValues>(ref, values as TFieldValues, validatorFnConfigs, fieldNamesRef.current);
 
     const errors: DeepMap<TFieldValues, FieldError> = {};
 
