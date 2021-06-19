@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { useDispatch } from '@store';
 import { styled } from '@material-ui/core';
+import { pageLoading } from '@store/loading/slices';
 
 const Wrapper = styled('div')({
   '& img': {
@@ -10,10 +11,10 @@ const Wrapper = styled('div')({
 
 const SamplePage: React.FunctionComponent = () => {
   const dispatch = useDispatch();
-
   const onClick = () => {
+    dispatch(pageLoading.open());
     setTimeout(() => {
-      console.log('TImeout');
+      dispatch(pageLoading.close());
     }, 2000);
   };
 

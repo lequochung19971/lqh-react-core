@@ -1,4 +1,3 @@
-import { difference } from "lodash";
 import { useState } from "react";
 
 /**
@@ -56,19 +55,6 @@ export const useForceRender = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_value, setValue] = useState(0); // integer state
   return () => setValue((value) => value + 1); // update the state to force render
-}
-
-/**
- * Function that check change current fields of hook-form by comparing diference between current and new.
- * @author   hungle
- * @param    {string[]}  currentFieldNames  Object
- * @param    {string[]}  newFieldNames  Object
- * @returns  {boolean}  is changed or not 
- */
-export const isFieldsRefChanged = (currentFieldNames: string[], newFieldNames: string[]): boolean => {
-  const diff1 = difference(newFieldNames, currentFieldNames);
-  const diff2 = difference(currentFieldNames, newFieldNames);
-  return !!(diff1.length || diff2.length);
 }
 
 /**

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { difference, get, has, set } from 'lodash';
+import { difference, get, has, isEqual, set } from 'lodash';
 import { useMemo, useRef } from 'react';
 import { Resolver, FieldError, DeepMap, FieldValues } from 'react-hook-form';
 import { DeepReadonly, ValidationResult, ValidatorFn, ValidatorFnAllType, ValidatorFnConfigs } from './types';
@@ -224,9 +224,8 @@ const loadValidationResolverRef = <TFieldValues>(
   fieldNames: string[],
 ) => {
   ref.current.formValue = formValue;
-  const diff1 = difference(fieldNames, ref.current.fieldNames);
-  const diff2 = difference(ref.current.fieldNames, fieldNames);
-  if (diff1.length || diff2.length) {
+  const isFieldsRefChanged = !isEqual(fieldNames, ref.current.fieldNames)
+  if (isFieldsRefChanged) {
     ref.current.fieldNames = fieldNames;
     ref.current.validators = loadValidators<TFieldValues>(
       ref.current.fieldNames,

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-types */
-import { get, set } from 'lodash';
+import { get, isEqual, set } from 'lodash';
 import { useLayoutEffect, useRef, useState } from 'react';
 import {
   useForm as useOriginalForm,
@@ -13,7 +13,7 @@ import {
   Resolver,
 } from 'react-hook-form';
 import { ValidatorFnConfigs } from './types';
-import { isFieldsRefChanged, isLiveInDOM } from './utils';
+import { isLiveInDOM } from './utils';
 import { createValidationContext, ValidationContext, validationResolver } from './validationResolver';
 
 export * from 'react-hook-form';
@@ -111,12 +111,13 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
 
   useLayoutEffect(() => {
     const newFieldNames = getFieldsNameFromFieldsRef(formRef.control.fieldsRef.current);
-    const isChanged = isFieldsRefChanged(fieldNamesRef.current, newFieldNames);
+    const isChanged = !isEqual(newFieldNames, fieldNamesRef.current);
     if (isChanged) {
       setFieldNames(newFieldNames);
     }
   });
 
+  // NOTE: Handle for when field is removed
   useLayoutEffect(() => {
     const loadDisabledFieldRef = () => {
       const target = { ...disabledFields };
