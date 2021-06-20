@@ -15,6 +15,9 @@ export class IDCardModel extends BaseModel {
   createPlace!: Address;
 
   constructor(props?: IDCardModel) {
-    super(props);
+    super();
+    if (props) {
+      this.doMapping(props);
+    }
   }
 }

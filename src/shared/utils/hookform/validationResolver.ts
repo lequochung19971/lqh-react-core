@@ -153,7 +153,7 @@ const executeValidators = <TFieldValues>(
  * @param    {(this: ValidatorModel<TFieldValues>, value: TFieldValue) => ValidationResult}  fn  A Validator Function (Only Normal Function)
  * @return   {(value: TFieldValue) => ValidationResult} A Validator Function
  */
-export function createValidator<TFieldValues extends FieldValues = FieldValues, TFieldValue = any>(
+export function createValidator<TFieldValues extends FieldValues = FieldValues, TFieldValue = string>(
   fn: (this: ValidatorModel<TFieldValues>, value: TFieldValue) => ValidationResult,
 ): (value: TFieldValue) => ValidationResult {
   return fn;

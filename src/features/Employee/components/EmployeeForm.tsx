@@ -1,46 +1,18 @@
-import React, { useEffect } from 'react';
-import {
-  createValidationForm,
-  ValidationContext,
-} from '@shared/utils/hookform/validationResolver';
+import React, { useState } from 'react';
+import { ValidationContext } from '@shared/utils/hookform/validationResolver';
 import { Controller, useFieldArray, useForm } from '@shared/utils/hookform/form';
 import { IEmployeeForm } from '../types/employeeForm.interface';
-import { required } from '../validators/employee.validator';
-import { LqhButton } from '@shared/ui-elements';
+import { InputDateField, LqhButton, SelectField } from '@shared/ui-elements';
 import { Box, Grid, TextField } from '@material-ui/core';
 import dayjs from 'dayjs';
-
-const defaultValues = {
-  firstName: '',
-  lastName: '',
-  fullName: '',
-  dob: '',
-  age: '',
-  test: [],
-  test2: {
-    value1: '',
-    value2: '',
-  }
-};
-
-export const validators = createValidationForm<IEmployeeForm>({
-  firstName: [required],
-  lastName: [required],
-  fullName: [required],
-  dob: [required],
-  age: [required],
-  test: [
-    {
-      value: [required]
-    }
-  ],
-  test2: {
-    value1: [required]
-  }
-});
+import { departmentDataSource } from '../configs/departmentConfig';
+import { defaultValues, validators } from '../configs/employeFormConfig';
+import { positionDataSource } from '../configs/positionConfig';
+import { SelectDataSource } from '@shared/types/selectDataSource.type';
+import AddressDialogField from './AddressDialogField';
 
 const EmployeeForm: React.FunctionComponent = () => {
-  const { control, handleSubmit, watch, getErrorsMui, setValue, getValues, setReadOnly, setDisable, validationContext, disabledFields, readOnlyFields } = useForm<
+  const { control, handleSubmit, getErrorsMui, setValue, getValues, setDisable } = useForm<
     IEmployeeForm,
     ValidationContext<IEmployeeForm>
   >({
@@ -48,80 +20,36 @@ const EmployeeForm: React.FunctionComponent = () => {
     validators,
     mode: 'onChange',
   });
-
   const { fields, append, remove } = useFieldArray({ control, name: 'test' });
 
-  const dayLength = 2;
-  const monthLength = 5;
-  const dobLength = 10;
-
-  useEffect(() => {
-    console.log('validationContext', validationContext);
-    console.log('disabledFields', disabledFields);
-    console.log('readOnlyFields', readOnlyFields); 
-  })
+  const [positionData, setPositionData] = useState([] as SelectDataSource<string>[]);
 
   const onSubmit = (data: any) => {
     console.log(data);
   };
 
-  useEffect(() => {
-    const setFullName = () => {
-      setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`.trim());
-    };
-    setFullName();
-  }, [watch('firstName'), watch('lastName')])
-  
-
-  const onDobKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    const regexNumber = /^[0-9]*$/;
-
-    if (checkAllowKeyCode(event)) {
-      return;
-    }
-
-    const value = (event.target as HTMLInputElement).value;
-    if (!regexNumber.test(event.key) || value.length === dobLength) {
-      event.preventDefault();
-    }
-
-    if (value.length === dayLength || value.length === monthLength) {
-      (event.target as HTMLInputElement).value = value + '/';
-    }
+  const handleSetFullName = () => {
+    setValue('fullName', `${getValues('firstName')} ${getValues('lastName')}`);
   };
 
-  const onDobChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const handleDobChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { value } = event.target;
-    setValue('dob', value);
     const now = dayjs(new Date());
+    const dobLength = 10;
     if (value.length === dobLength) {
-      console.log(control);
       const age = now.diff(value, 'year');
       setValue('age', age.toString());
-      setReadOnly('age', true);
       setDisable('age', true);
     }
   };
 
-  const checkAllowKeyCode = (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
-    if (
-      ['Tab', 'Delete', 'Backspace', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'End', 'Home'].indexOf(
-        event.key,
-      ) !== -1 ||
-      // Allow: Ctrl + A
-      (event.key === 'a' && event.ctrlKey === true) ||
-      // Allow: Ctrl + C
-      (event.key === 'c' && event.ctrlKey === true) ||
-      // Allow: Ctrl + V
-      (event.key === 'v' && event.ctrlKey === true) ||
-      // Allow: Ctrl + X
-      (event.key === 'x' && event.ctrlKey === true)
-    ) {
-      return true;
+  const handleDepartmentChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const positions = positionDataSource.find((source) => source.id === event.target.value);
+    if (positions) {
+      setPositionData(positions.data);
     }
-
-    return false;
   };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -134,13 +62,14 @@ const EmployeeForm: React.FunctionComponent = () => {
                 render={({ field }) => {
                   return (
                     <TextField
-                    {...field}
-                    {...getErrorsMui('firstName')}
-                    label="First Name"
-                    fullWidth
-                    required
-                  />
-                  )
+                      {...field}
+                      {...getErrorsMui('firstName')}
+                      onChange={handleSetFullName}
+                      label="First Name"
+                      fullWidth
+                      required
+                    />
+                  );
                 }}
               />
             </Grid>
@@ -152,6 +81,7 @@ const EmployeeForm: React.FunctionComponent = () => {
                   <TextField
                     {...field}
                     {...getErrorsMui('lastName')}
+                    onChange={handleSetFullName}
                     label="Last Name"
                     fullWidth
                   />
@@ -162,7 +92,17 @@ const EmployeeForm: React.FunctionComponent = () => {
               <Controller
                 name="fullName"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Full Name" fullWidth />}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    {...getErrorsMui('fullName')}
+                    label="Full Name"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={6}>
@@ -170,11 +110,10 @@ const EmployeeForm: React.FunctionComponent = () => {
                 name="dob"
                 control={control}
                 render={({ field }) => (
-                  <TextField
+                  <InputDateField
                     {...field}
                     {...getErrorsMui('dob')}
-                    onKeyDown={onDobKeyDown}
-                    onChange={onDobChange}
+                    onChange={handleDobChange}
                     label="Date of Birth"
                     fullWidth
                   />
@@ -189,16 +128,64 @@ const EmployeeForm: React.FunctionComponent = () => {
               />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Email" fullWidth />
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => <TextField {...field} {...getErrorsMui('email')} label="Email" fullWidth />}
+              />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Phone" fullWidth />
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => <TextField {...field} {...getErrorsMui('phone')} label="Phone" fullWidth />}
+              />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Department" fullWidth />
+              <Controller
+                name="department"
+                control={control}
+                render={({ field }) => (
+                  <SelectField
+                    {...field}
+                    {...getErrorsMui('department')}
+                    onChange={handleDepartmentChange}
+                    label="Department"
+                    dataSource={departmentDataSource}
+                    fullWidth
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={6}>
-              <TextField label="Position" fullWidth />
+              <Controller
+                name="position"
+                control={control}
+                render={({ field }) => (
+                  <SelectField
+                    {...field}
+                    {...getErrorsMui('position')}
+                    label="Position"
+                    dataSource={positionData}
+                    fullWidth
+                    disabled={!positionData.length}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Controller
+                name="addressValue"
+                control={control}
+                render={({ field }) => (
+                  <AddressDialogField
+                    {...field}
+                    {...getErrorsMui('addressValue')}
+                    label="Address Information"
+                    fullWidth
+                  />
+                )}
+              />
             </Grid>
 
             <Grid item xs={6}>
@@ -210,15 +197,16 @@ const EmployeeForm: React.FunctionComponent = () => {
             {fields.map((f, index) => {
               return (
                 <>
-                  <Grid key={index} item xs={9}>
+                  <Grid key={`input-${index}`} item xs={9}>
                     <Controller
                       name={`test.${index}.value` as `test.${number}.value`}
                       control={control}
-                      defaultValue=""
-                      render={({ field }) => <TextField {...field} label="value" fullWidth />}
+                      render={({ field }) => (
+                        <TextField {...field} {...getErrorsMui(`test.${index}.value`)} label="value" fullWidth />
+                      )}
                     />
                   </Grid>
-                  <Grid key={index} item xs={3}>
+                  <Grid key={`btn-${index}`} item xs={3}>
                     <LqhButton color="secondary" variant="contained" size="large" onClick={() => remove(index)}>
                       Remove
                     </LqhButton>

@@ -10,6 +10,9 @@ export class DepartmentModel extends BaseModel {
   name!: string;
 
   constructor(props?: DepartmentModel) {
-    super(props);
+    super();
+    if (props) {
+      this.doMapping(props);
+    }
   }
 }

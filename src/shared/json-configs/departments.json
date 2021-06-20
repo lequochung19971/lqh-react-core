@@ -1,0 +1,22 @@
+[
+  {
+    "id": "financeAndAccountingDep",
+    "name": "FINANCE_ACCOUNTING_DEPARTMENT"
+  },
+  {
+    "id": "HRDep",
+    "name": "HR_DEPARTMENT"
+  },
+  {
+    "id": "ITDep",
+    "name": "IT_DEPARTMENT"
+  },
+  {
+    "id": "salesDep",
+    "name": "SALE_DEPARTMENT"
+  },
+  {
+    "id": "marketingDep",
+    "name": "MARKETING_DEPARTMENT"
+  }
+]

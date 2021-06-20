@@ -63,6 +63,9 @@ export class EmployeeModel extends BaseModel {
   confirmPassword?: string;
 
   constructor(props?: EmployeeModel) {
-    super(props);
+    super();
+    if (props) {
+      this.doMapping(props);
+    }
   }
 }
