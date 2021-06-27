@@ -1,5 +1,5 @@
-import { BaseAuth } from "src/auth/baseAuth";
-import { AuthLocalStorageKeys, TokenType } from "../enums/auth.enum";
+import { BaseAuth } from 'src/auth/baseAuth';
+import { AuthLocalStorageKeys, TokenType } from '../enums/auth.enum';
 
 export interface IAuthToken {
   accessToken?: string;
@@ -8,8 +8,13 @@ export interface IAuthToken {
   expiredIn?: number;
 }
 
+export interface AuthStorageKeys {
+  accessToken: AuthLocalStorageKeys;
+  refreshToken: AuthLocalStorageKeys;
+}
+
 export interface AuthConfig {
-  authStorageKeys?: { accessToken: AuthLocalStorageKeys; refreshToken: AuthLocalStorageKeys };
+  authStorageKeys?: AuthStorageKeys;
   authInstance?: BaseAuth;
 }
 

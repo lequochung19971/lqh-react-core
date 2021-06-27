@@ -32,7 +32,7 @@ export class HttpClient {
     const headers = isAuthenticated ? this.getConfigHeader(config) : {};
 
     return {
-      ...(this._httpConfig || {}),
+      ...this._httpConfig,
       headers,
       paramsSerializer: (params: any) => queryString.stringify(params),
     };

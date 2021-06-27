@@ -7,6 +7,8 @@ import { Provider, store } from '@store';
 import AppInit from './AppInit';
 import ThemeProvider from '@shared/styles/theme/ThemeProvider';
 
+console.log(process.env.REACT_APP_ENV);
+
 AppInit();
 const providers = [LoadingProvider, ThemeProvider];
 
