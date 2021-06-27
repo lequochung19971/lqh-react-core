@@ -26,7 +26,8 @@
     "strict": true,
     "downlevelIteration": true,
     "isolatedModules": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "outDir": "build"
   },
   "exclude": [
     "node_modules",

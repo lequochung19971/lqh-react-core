@@ -2,6 +2,7 @@
   "name": "react-core",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@craco/craco": "^6.1.1",
     "@hookform/resolvers": "^2.2.0",
