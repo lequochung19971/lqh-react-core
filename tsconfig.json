@@ -28,12 +28,13 @@
     "isolatedModules": true,
     "experimentalDecorators": true
   },
-  "include": [
-    "src/**/*"
-  ],
   "exclude": [
     "node_modules",
     "build",
     "**/node_modules/*"
+  ],
+  "include": [
+    "src",
+    "src/**/*"
   ]
 }
