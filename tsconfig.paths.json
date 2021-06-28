@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+		"baseUrl": ".",
+    "rootDir": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@app": ["src/app"],
+      "@assets/*": ["src/assets/*"],
+      "@assets": ["src/assets"],
+      "@features/*": ["src/features/*"],
+      "@features": ["src/features"],
+      "@guards/*": ["src/guards/*"],
+      "@guards": ["src/guards"],
+      "@http/*": ["src/http/*"],
+      "@http": ["src/http"],
+      "@shared/*": ["src/shared/*"],
+      "@shared": ["src/shared"],
+      "@store/*": ["src/store/*"],
+      "@store": ["src/store"]
+    }
+  }
+}

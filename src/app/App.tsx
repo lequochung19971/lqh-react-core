@@ -1,24 +1,31 @@
-import React from 'react';
-import '../assets/styles/styles.scss';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { PageLoading, ProvidersGroup, Shell } from '@shared/components';
+import { LoadingProvider } from '@shared/contexts';
+import AppRouting from './AppRouting';
+import { Provider, store } from '@store';
+import AppInit from './AppInit';
+import ThemeProvider from '@shared/styles/theme/ThemeProvider';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+console.log(process.env.REACT_APP_ENV);
+
+AppInit();
+const providers = [LoadingProvider, ThemeProvider];
+
+const App: React.FunctionComponent = () => (
+  <>
+    <Provider store={store}>
+      <ProvidersGroup providers={providers}>
+        <Router>
+          <Shell>
+            <Suspense fallback={<PageLoading loading={true} />}>
+              <AppRouting />
+            </Suspense>
+          </Shell>
+        </Router>
+      </ProvidersGroup>
+    </Provider>
+  </>
+);
 
 export default App;
