@@ -8,11 +8,11 @@ const ProvidersGroup: React.FunctionComponent<ProvidersGroupProps> = (props) => 
   let { children } = props;
 
   /* Error - Validation */
-  if (!children) {
+  if (!props.providers) {
     throw 'ProvidersGroup: Missing providers props';
   }
 
-  if (!Array.isArray(children)) {
+  if (!Array.isArray(props.providers)) {
     throw 'ProvidersGroup: Must be a array';
   }
 
@@ -25,7 +25,7 @@ const ProvidersGroup: React.FunctionComponent<ProvidersGroupProps> = (props) => 
     return <>{children}</>;
   }
 
-  children.forEach((provider: any) => {
+  props.providers.forEach((provider: any) => {
     const providerElement = createElement(provider);
     children = cloneElement(providerElement, props, children);
   });

@@ -1,6 +1,6 @@
 import { RouteConfig } from '@shared/types';
-import React from 'react';
-import { Switch } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { Switch, useRouteMatch } from 'react-router-dom';
 import { LqhRoute } from '..';
 
 interface Props {
@@ -28,13 +28,31 @@ const LqhRouting: React.FunctionComponent<Props> = (props) => {
 
 export default LqhRouting;
 
-export const createRoutes = (routes: RouteConfig[], parentPath = ''): RouteConfig[] => {
-  if (parentPath) {
-    return routes.map((route) => {
-      route.path = `${parentPath}${route.path}`;
-      return route;
-    });
-  }
+/**
+ * @decs Function that init and map current configured routes for parent route if any.
+ * @author hungle
+ * @param {RouteConfig[]} routes 
+ * @param {string} parentUrl 
+ * @returns {RouteConfig[]}
+ */
+export const useRoutes = (routes: RouteConfig[], parentUrl = ''): RouteConfig[] => {
+  let { url } = useRouteMatch();
 
-  return routes;
+  const sliceTheLastCharOfUrl = (url: string, slicedChar: string) => {
+    return url.slice(-1) === slicedChar ? url.slice(0, -1) : url;
+  };
+
+  url = sliceTheLastCharOfUrl(url, '/');
+  parentUrl = sliceTheLastCharOfUrl(parentUrl, '/');
+
+  return useMemo(() => {
+    if ((url && url !== '/') || (parentUrl && parentUrl !== '/')) {
+      return routes.map((route) => {
+        route.path = `${parentUrl || url}${route.path}`;
+        return route;
+      });
+    }
+
+    return routes;
+  }, [url, routes, parentUrl]);
 };

@@ -8,6 +8,7 @@ interface LoadingContextRef {
 
 export const [LoadingProvider, useLoadingContext, LoadingContext] = createContext<LoadingContextRef, { test: boolean }>(
   {
+    defaultValue: {} as LoadingContextRef,
     useProvider: () => {
       const [isPageLoading, setIsPageLoading] = useState(false);
 

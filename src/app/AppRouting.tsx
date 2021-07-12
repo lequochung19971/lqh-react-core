@@ -1,28 +1,24 @@
 import { RouteConfig } from '@shared/types';
-import React, { lazy, useMemo } from 'react';
+import React, { lazy } from 'react';
 import { LqhRouting } from '@shared/components';
-import { createRoutes } from '@shared/components/Routers/LqhRouting';
+import { useRoutes } from '@shared/components/Routers/LqhRouting';
 
 const AppRouting: React.FunctionComponent = () => {
-  const routes: RouteConfig[] = useMemo(
-    () =>
-      createRoutes([
-        {
-          path: '/',
-          exact: true,
-          component: lazy(() => import('../features/Sample')),
-        },
-        {
-          path: '/sample',
-          component: lazy(() => import('../features/Sample')),
-        },
-        {
-          path: '/employee',
-          component: lazy(() => import('../features/Employee')),
-        },
-      ]),
-    [],
-  );
+  const routes: RouteConfig[] = useRoutes([
+    {
+      path: '/',
+      exact: true,
+      component: lazy(() => import('../features/Sample')),
+    },
+    {
+      path: '/sample',
+      component: lazy(() => import('../features/Sample')),
+    },
+    {
+      path: '/employee',
+      component: lazy(() => import('../features/Employee')),
+    },
+  ]);
 
   return <LqhRouting routes={routes} />;
 };
