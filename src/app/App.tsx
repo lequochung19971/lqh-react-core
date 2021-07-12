@@ -3,28 +3,31 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { PageLoading, ProvidersGroup, Shell } from '@shared/components';
 import { LoadingProvider } from '@shared/contexts';
 import AppRouting from './AppRouting';
-import { Provider, store } from '@store';
+import { Provider, ProviderProps, store } from '@store';
 import AppInit from './AppInit';
 import ThemeProvider from '@shared/styles/theme/ThemeProvider';
+import { withProvider } from '@shared/components/ProvidersGroup/withProvider';
 
 console.log(process.env.REACT_APP_ENV);
 
 AppInit();
-const providers = [LoadingProvider, ThemeProvider];
+const providers: React.FunctionComponent[] = [
+  withProvider<ProviderProps, typeof Provider>(Provider, { store }),
+  withProvider<{ test: boolean }, any>(LoadingProvider, { test: true }),
+  ThemeProvider,
+];
 
 const App: React.FunctionComponent = () => (
   <>
-    <Provider store={store}>
-      <ProvidersGroup providers={providers}>
-        <Router>
-          <Shell>
-            <Suspense fallback={<PageLoading loading={true} />}>
-              <AppRouting />
-            </Suspense>
-          </Shell>
-        </Router>
-      </ProvidersGroup>
-    </Provider>
+    <ProvidersGroup providers={providers}>
+      <Router>
+        <Shell>
+          <Suspense fallback={<PageLoading loading={true} />}>
+            <AppRouting />
+          </Suspense>
+        </Shell>
+      </Router>
+    </ProvidersGroup>
   </>
 );
 

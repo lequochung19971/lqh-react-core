@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { get, has, isEqual, set } from 'lodash';
 import { useMemo, useRef } from 'react';
@@ -84,7 +83,7 @@ export class ValidatorModel<TFieldValues extends FieldValues = FieldValues> {
 }
 
 /**
- * Function that creates a memorized validation context for context property in useForm (React Hook Form).
+ * @desc Function that creates a memorized validation context for context property in useForm (React Hook Form).
  * @author   hungle
  * @returns  {ValidationContext<TFieldValues>}  memorized validation context
  */
@@ -110,7 +109,7 @@ const generateValidatorPath = (path: string): string => {
 };
 
 /**
- * Function that runs validator functions when any fields or form are detected change.
+ * @desc Function that runs validator functions when any fields or form are detected change.
  * @author   hungle
  * @param    {React.MutableRefObject<ValidationResolverRef<TFieldValues>>}  ref  A Relsover Reference to save necessary informations for handling during a form process
  * @param    {string[]}  paths  Flattened object keys
@@ -148,10 +147,10 @@ const executeValidators = <TFieldValues>(
 };
 
 /**
- * Function that creates a validator function with "this"
+ * @desc Function that creates a validator function with "this"
  * @author   hungle
  * @param    {(this: ValidatorModel<TFieldValues>, value: TFieldValue) => ValidationResult}  fn  A Validator Function (Only Normal Function)
- * @return   {(value: TFieldValue) => ValidationResult} A Validator Function
+ * @returns   {(value: TFieldValue) => ValidationResult} A Validator Function
  */
 export function createValidator<TFieldValues extends FieldValues = FieldValues, TFieldValue = string>(
   fn: (this: ValidatorModel<TFieldValues>, value: TFieldValue) => ValidationResult,
@@ -160,10 +159,10 @@ export function createValidator<TFieldValues extends FieldValues = FieldValues, 
 }
 
 /**
- * Function that creates and validate A Validation Form to pass into "validationResolver" function
+ * @desc Function that creates and validate A Validation Form to pass into "validationResolver" function
  * @author   hungle
  * @param    {ValidatorFnConfigs<TFieldValues>}  validatorFnConfigs  Configured Validator Functions
- * @return   {ValidatorFnConfigs<TFieldValues>} Configured Validator Functions
+ * @returns   {ValidatorFnConfigs<TFieldValues>} Configured Validator Functions
  */
 export const createValidationForm = <TFieldValues extends FieldValues = FieldValues>(
   validatorFnConfigs: ValidatorFnConfigs<TFieldValues>,
@@ -172,7 +171,7 @@ export const createValidationForm = <TFieldValues extends FieldValues = FieldVal
 };
 
 /**
- * Function that load resolver references
+ * @desc Function that load resolver references
  * @author   hungle
  * @param    {string[]}  paths  Flattened object keys
  * @param    {TFieldValues}  formValue  Form value
@@ -213,7 +212,7 @@ const loadValidators = <TFieldValues extends FieldValues = FieldValues>(
 };
 
 /**
- * Function that load resolver references
+ * @desc Function that load resolver references
  * @author   hungle
  * @param    {React.MutableRefObject<ValidationResolverRef<TFieldValues>>}  ref  A Relsover Reference to save necessary informations for handling during a form process
  * @param    {TFieldValues}  formValue   Form value
@@ -242,7 +241,7 @@ const loadValidationResolverRef = <TFieldValues>(
 };
 
 /**
- * Function that load validation context
+ * @desc Function that load validation context
  * @author   hungle
  * @param    {React.MutableRefObject<ValidationResolverRef<TFieldValues>>}  ref  A Relsover Reference to save necessary informations for handling during a form process
  * @param    {ValidationContext<TFieldValues> | undefined}  context   Validation context
@@ -257,10 +256,10 @@ const loadValidationContext = <TFieldValues>(
 };
 
 /**
- * Function that generates a Validation Resolver for React Hook Form
+ * @desc Function that generates a Validation Resolver for React Hook Form
  * @author   hungle
  * @param    {ValidatorFnConfigs<TFieldValues>}  validatorFnConfigs  Configured Validator Functions
- * @return   {Resolver<TFieldValues, ValidationContext<TFieldValues>>} Resolver of a Hook Form
+ * @returns   {Resolver<TFieldValues, ValidationContext<TFieldValues>>} Resolver of a Hook Form
  */
 export const validationResolver = <TFieldValues extends FieldValues = FieldValues>(
   validatorFnConfigs: ValidatorFnConfigs<TFieldValues>,

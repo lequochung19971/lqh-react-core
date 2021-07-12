@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 /**
- * Function that implements to flatten object by recursion.
+ * @decs Function that implements to flatten object by recursion.
  * @author   hungle
  * @param    {any}  currentNode  Current Object
  * @param    {string[]}  target  Flattened Result
@@ -28,7 +28,7 @@ const traverseAndFlatten = (currentNode: any, target: string[], flattenedKey?: s
 };
 
 /**
- * Function that flatten object.
+ * @decs Function that flatten object.
  * @author   hungle
  * @param    {unknown}  obj  Object
  * @returns  {string[]}  Object keys
@@ -48,7 +48,7 @@ export const clearObjectKeepReference = (obj: any): void => {
 };
 
 /**
- * Function hook in order to force re-render function component
+ * @decs Function hook in order to force re-render function component
  * @author   hungle
  */
 export const useForceRender = () => {
@@ -58,7 +58,7 @@ export const useForceRender = () => {
 }
 
 /**
- * Function that check current htmlRef is existed in DOM.
+ * @decs Function that check current htmlRef is existed in DOM.
  * @author   hungle
  * @param    {HTMLElement}  elementRef  Object
  * @returns  {boolean}  is existed or not 
