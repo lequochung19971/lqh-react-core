@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { FieldError, FieldValues } from 'react-hook-form';
+import {
+  FieldError,
+  FieldValues,
+} from 'react-hook-form';
 
 /**
  * -----------------------------------------------------------------------------------
@@ -22,7 +25,7 @@ export type DeepReadonlyObject<T> = {
 
 export type ValidationResult = FieldError | null | undefined | false;
 export type ValidatorFn<TFieldValue extends any = any> = (value: TFieldValue) => ValidationResult;
-export type ValidatorFnArray<TFieldValues extends FieldValues = FieldValues> = ValidatorFnConfigs<TFieldValues>[];
+export type ValidatorFnArray<TFieldValues extends FieldValues = FieldValues> = ConfiguredValidatorFn<TFieldValues>[];
 export type ValidatorFnObject<TFieldValues> = {
   [P in keyof TFieldValues]?: ValidatorFn<TFieldValues[P]>[];
 };
@@ -30,11 +33,12 @@ export type ValidatorFnAllType<TFieldValues extends FieldValues = FieldValues> =
   | ValidatorFnArray<TFieldValues[string]>
   | ValidatorFnObject<TFieldValues[string]>
   | ValidatorFn<TFieldValues[string]>[];
-export type ValidatorFnConfigs<TFieldValues extends FieldValues = FieldValues> = {
-  [P in keyof TFieldValues]?: 
-    TFieldValues[P] extends (infer R)[] ? ValidatorFnArray<R> : // Is Array
-    TFieldValues[P] extends object ? ValidatorFnObject<TFieldValues[P]> : // Is Object
-    ValidatorFn<TFieldValues[P]>[]; // Is Fn
+export type ConfiguredValidatorFn<TFieldValues extends FieldValues = FieldValues> = {
+  [P in keyof TFieldValues]?: TFieldValues[P] extends (infer R)[]
+    ? ValidatorFnArray<R> // Is Array
+    : TFieldValues[P] extends object
+    ? ValidatorFnObject<TFieldValues[P]> // Is Object
+    : ValidatorFn<TFieldValues[P]>[]; // Is Fn
 };
 
 /**

@@ -9,63 +9,14 @@ import {
   UseFormProps as UseOriginalFormProps,
   UseFormReturn as UseOriginalFormReturn,
   FieldError,
-  Field,
   Resolver,
 } from 'react-hook-form';
-import { ValidatorFnConfigs } from './types';
-import { isLiveInDOM } from './utils';
+import { ConfiguredValidatorFn } from './types';
+import { forEachFieldElement, getCurrentHTMLElementRef, getFieldsNameFromFieldsRef, isLiveInDOM } from './utils';
 import { createValidationContext, ValidationContext, validationResolver } from './validationResolver';
 
 export * from 'react-hook-form';
-
-const traverseAndCollectFieldName = (fieldsRef: Partial<Record<string, Field>>, target: string[]) => {
-  for (const key in fieldsRef) {
-    if (fieldsRef.hasOwnProperty(key)) {
-      const value: any = fieldsRef[key];
-      if (key === '_f') {
-        const fieldName: string = get(value, 'name') as string;
-        target.push(fieldName);
-      } else {
-        traverseAndCollectFieldName(value, target);
-      }
-    }
-  }
-};
-
-const getFieldsNameFromFieldsRef = (fieldsRef: Partial<Record<string, Field>>): string[] => {
-  const fieldNames: string[] = [];
-  traverseAndCollectFieldName(fieldsRef, fieldNames);
-  return fieldNames;
-};
-
-const forEachFieldElement = (
-  parentElementRef: HTMLElement,
-  callback: (elementRef: HTMLInputElement | HTMLTextAreaElement, elementName: string) => void,
-) => {
-  if (!isLiveInDOM(parentElementRef)) return;
-
-  type HTMLElementName = 'input' | 'textarea';
-  const htmlElementNames: HTMLElementName[] = ['input', 'textarea'];
-
-  for (const elementName of htmlElementNames) {
-    const elementRef = parentElementRef.querySelector(elementName);
-    if (elementRef && isLiveInDOM(elementRef)) {
-      callback(elementRef, elementName);
-    }
-  }
-};
-
-const getCurrentHTMLElementRef = <TFieldValues>(
-  fieldName: string,
-  formRef: UseOriginalFormReturn<TFieldValues>,
-): HTMLElement => {
-  const { fieldsRef } = formRef.control;
-  const pathRef = `${fieldName}._f.ref`;
-  const ref: HTMLElement = (get(fieldsRef.current, pathRef) as unknown) as HTMLElement;
-  return ref;
-};
-
-interface UseFormReturn<TFieldValues extends FieldValues = FieldValues, TContext extends object = object>
+export interface UseFormReturn<TFieldValues extends FieldValues = FieldValues, TContext extends object = object>
   extends UseOriginalFormReturn<TFieldValues> {
   setValues: (_data: TFieldValues) => void;
   getErrorsMui: (fieldName: string) => { error: boolean; helperText: string };
@@ -76,51 +27,61 @@ interface UseFormReturn<TFieldValues extends FieldValues = FieldValues, TContext
   readonly readOnlyFields: object;
 }
 
-interface UseFormProps<TFieldValues extends FieldValues = FieldValues, TContext extends object = object>
+export interface UseFormProps<TFieldValues extends FieldValues = FieldValues, TContext extends object = object>
   extends UseOriginalFormProps<TFieldValues, TContext> {
-  validators?: ValidatorFnConfigs<TFieldValues>;
+  validators?: ConfiguredValidatorFn<TFieldValues>;
 }
 
 export function useForm<TFieldValues extends FieldValues = FieldValues, TContext extends object = object>(
   props: UseFormProps<TFieldValues, TContext>,
 ): UseFormReturn<TFieldValues, TContext> {
+  const { validators, ...originalFormProps } = props;
+
+  /** Public disabled fields and readonly fields */
   const [disabledFields, setDisabledFields] = useState({});
   const [readOnlyFields, setReadOnlyFields] = useState({});
-  const [fieldNames, setFieldNames] = useState<string[]>([]);
+  const [fieldsName, setFieldsName] = useState<string[]>([]);
 
+  /** Save disabled fields, readonly fields and field names in Ref to use for internal handling that aims to prevent re-render */
   const disabledFieldsRef = useRef({});
   const readOnlyFieldsRef = useRef({});
-  const fieldNamesRef = useRef([] as string[]);
+  const fieldsNameRef = useRef([] as string[]);
 
-  const { validators, ...originalFormProps } = props;
   const validationContext = createValidationContext<TFieldValues>();
 
   const formRef = useOriginalForm<TFieldValues, TContext>({
     ...originalFormProps,
-    resolver: validators  // if validators => init customed resolver <---> if not => using original resolver.
-      ? validationResolver<TFieldValues>(validators, fieldNamesRef, validationContext) as Resolver<TFieldValues, object>
+    resolver: validators // if validators => init customed resolver <---> if not => using original resolver.
+      ? (validationResolver<TFieldValues>(validators, fieldsNameRef, validationContext) as Resolver<
+          TFieldValues,
+          object
+        >)
       : originalFormProps.resolver,
     context: validators ? (validationContext as TContext) : originalFormProps.context,
-  });
+  }) as UseFormReturn<TFieldValues, TContext>;
 
-  fieldNamesRef.current = fieldNames;
+  fieldsNameRef.current = fieldsName;
   disabledFieldsRef.current = disabledFields;
   readOnlyFieldsRef.current = readOnlyFields;
 
   useLayoutEffect(() => {
-    const newFieldNames = getFieldsNameFromFieldsRef(formRef.control.fieldsRef.current);
-    const isChanged = !isEqual(newFieldNames, fieldNamesRef.current);
+    const newFieldsName = getFieldsNameFromFieldsRef(formRef.control.fieldsRef);
+    const isChanged = !isEqual(newFieldsName, fieldsNameRef.current);
     if (isChanged) {
-      setFieldNames(newFieldNames);
+      setFieldsName(newFieldsName);
     }
   });
 
   // NOTE: Handle for when field is removed
   useLayoutEffect(() => {
+    /**
+     * If fieldsName is changed, the hook form will init or load disabled fields or readonly field again so that they can be newest.
+     */
+
     const loadDisabledFieldRef = () => {
       const target = { ...disabledFields };
-      for (const fieldName of fieldNamesRef.current) {
-        const elementRef = getCurrentHTMLElementRef<TFieldValues>(fieldName, formRef);
+      for (const fieldName of fieldsNameRef.current) {
+        const elementRef = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
         if (isLiveInDOM(elementRef)) {
           forEachFieldElement(elementRef, (el) => {
             set(target, fieldName, el.disabled);
@@ -132,11 +93,11 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
 
     const loadReadOnlyFieldRef = () => {
       const target = { ...readOnlyFields };
-      for (const fieldName of fieldNamesRef.current) {
-        const elementRef = getCurrentHTMLElementRef<TFieldValues>(fieldName, formRef);
+      for (const fieldName of fieldsNameRef.current) {
+        const elementRef = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
         if (isLiveInDOM(elementRef)) {
           forEachFieldElement(elementRef, (el) => {
-            set(target, fieldName, el.readOnly);
+            set(target, fieldName, (el as HTMLInputElement | HTMLTextAreaElement).readOnly);
           });
         }
       }
@@ -144,7 +105,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
     };
     loadDisabledFieldRef();
     loadReadOnlyFieldRef();
-  }, [fieldNames]);
+  }, [fieldsName]);
 
   const setValues = (data: TFieldValues) => {
     for (const key in data) {
@@ -156,15 +117,19 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
 
   const doSetReadOnly = (fieldName: string, parentElement: HTMLElement, value: boolean) => {
     const target = { ...readOnlyFields };
-    forEachFieldElement(parentElement, (element) => {
-      element.readOnly = value;
+    forEachFieldElement(parentElement, (element, elementName) => {
+      /** Readonly is not applied for select element (HTML5) */
+      const isNotSelectElement = elementName !== 'select'
+      if (isNotSelectElement) {
+        (element as HTMLInputElement | HTMLTextAreaElement).readOnly = value;
+      }
       set(target, fieldName, value);
       setReadOnlyFields(target);
     });
   };
 
   const setReadOnly = (fieldName: string, value: boolean) => {
-    const ref: HTMLElement = getCurrentHTMLElementRef<TFieldValues>(fieldName, formRef);
+    const ref: HTMLElement = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
 
     if (!ref) return;
 
@@ -181,7 +146,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
   };
 
   const setDisable = (fieldName: string, value: boolean) => {
-    const ref: HTMLElement = getCurrentHTMLElementRef<TFieldValues>(fieldName, formRef);
+    const ref: HTMLElement = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
 
     if (!ref) return;
 

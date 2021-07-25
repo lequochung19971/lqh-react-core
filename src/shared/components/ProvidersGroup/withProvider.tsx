@@ -11,9 +11,8 @@ export const withProvider = <TProps extends object, TComponent extends typeof Co
   ProviderComponent: React.FunctionComponent<TProps> | TComponent,
   providerProps: TProps,
 ): React.FunctionComponent<{}> => {
-  const Provider: React.FunctionComponent = (props) => {
+  const ProviderItem: React.FunctionComponent = (props) => {
     return <ProviderComponent {...(providerProps ?? ({} as TProps))}>{props.children}</ProviderComponent>;
   };
-
-  return Provider;
+  return ProviderItem;
 };

@@ -8,8 +8,6 @@ import AppInit from './AppInit';
 import ThemeProvider from '@shared/styles/theme/ThemeProvider';
 import { withProvider } from '@shared/components/ProvidersGroup/withProvider';
 
-console.log(process.env.REACT_APP_ENV);
-
 AppInit();
 const providers: React.FunctionComponent[] = [
   withProvider<ProviderProps, typeof Provider>(Provider, { store }),

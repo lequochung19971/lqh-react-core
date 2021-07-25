@@ -6,7 +6,7 @@ interface LoadingContextRef {
   setIsPageLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-export const [LoadingProvider, useLoadingContext, LoadingContext] = createContext<LoadingContextRef, { test: boolean }>(
+export const [LoadingProvider, useLoadingContext, LoadingContext] = createContext<LoadingContextRef, { test?: boolean }>(
   {
     defaultValue: {} as LoadingContextRef,
     useProvider: () => {
