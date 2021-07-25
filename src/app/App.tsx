@@ -15,18 +15,18 @@ const providers: React.FunctionComponent[] = [
   ThemeProvider,
 ];
 
-const App: React.FunctionComponent = () => (
-  <>
+const App: React.FunctionComponent = () => {
+  return (
     <ProvidersGroup providers={providers}>
-      <Router>
-        <Shell>
-          <Suspense fallback={<PageLoading loading={true} />}>
+      <Suspense fallback={<PageLoading loading={true} />}>
+        <Router>
+          <Shell>
             <AppRouting />
-          </Suspense>
-        </Shell>
-      </Router>
+          </Shell>
+        </Router>
+      </Suspense>
     </ProvidersGroup>
-  </>
-);
+  );
+};
 
 export default App;
