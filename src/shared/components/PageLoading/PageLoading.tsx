@@ -16,7 +16,7 @@ const PageLoading: React.FunctionComponent<PageLoadingProps> = ({ loading = fals
   const isPageLoading = useSelector(selectIsPageLoading);
   return (
     <StyledBackdrop open={loading || isPageLoading}>
-      <CircularProgress size={80}/>
+      <CircularProgress size={80} />
     </StyledBackdrop>
   );
 };

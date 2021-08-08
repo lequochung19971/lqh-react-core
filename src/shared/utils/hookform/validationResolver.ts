@@ -125,11 +125,11 @@ const generateValidatorPath = (path: string): string => {
   return validatorPath;
 };
 /**
- * @desc  Function that do validate and save returned error in the errors list. 
+ * @desc  Function that do validate and save returned error in the errors list.
  * If an error is returned, the process of validating is stopped.
  * @author  hungle
  * @param {React.MutableRefObject<ValidationResolverRef<TFieldValues>>}  ref
- * A Relsover Reference to save necessary informations for handling during a form process 
+ * A Relsover Reference to save necessary informations for handling during a form process
  * @param {string} path path of current field that is saved in fieldsName
  * @param {TFieldValues} currentValue value of the current field
  * @param {ValidatorFn<TFieldValues>[]} currentValidators validators of the current field

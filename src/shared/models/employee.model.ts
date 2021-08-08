@@ -18,7 +18,7 @@ export class EmployeeModel extends BaseModel {
   @Expose()
   lastName!: string;
 
-  @Expose({toClassOnly: true})
+  @Expose({ toClassOnly: true })
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
@@ -56,7 +56,7 @@ export class EmployeeModel extends BaseModel {
 
   @Expose()
   password?: string;
-  
+
   @Expose()
   avatar?: string | File;
 

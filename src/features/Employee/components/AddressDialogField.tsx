@@ -80,7 +80,7 @@ const AddressDialogField = React.forwardRef<any, AddressDialogFieldProps>(functi
       dialogProps={{
         open: openAddressDialog,
         onClose: () => handleCloseDialog(),
-				maxWidth: 'md',
+        maxWidth: 'md',
         fullWidth: true,
       }}
     >

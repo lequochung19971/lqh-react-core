@@ -1,4 +1,4 @@
-import { Button, styled } from "@material-ui/core";
+import { Button, styled } from '@material-ui/core';
 import {
   compose,
   breakpoints,
@@ -12,4 +12,6 @@ import {
   typography,
 } from '@material-ui/system';
 
-export const LqhButton = styled(Button)(breakpoints(compose(spacing, border, display, flexbox, positions, shadows, sizing, typography)));
+export const LqhButton = styled(Button)(
+  breakpoints(compose(spacing, border, display, flexbox, positions, shadows, sizing, typography)),
+);

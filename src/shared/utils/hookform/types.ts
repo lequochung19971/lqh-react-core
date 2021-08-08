@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import {
-  FieldError,
-  FieldValues,
-} from 'react-hook-form';
+import { FieldError, FieldValues } from 'react-hook-form';
 
 /**
  * -----------------------------------------------------------------------------------

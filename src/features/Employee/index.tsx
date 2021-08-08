@@ -1,4 +1,4 @@
-import EmployeeRouting from "./EmployeeRouting";
+import EmployeeRouting from './EmployeeRouting';
 
 const Employee: React.FunctionComponent = () => {
   return <EmployeeRouting />;

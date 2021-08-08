@@ -3,7 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 
 export const InputDateField = React.forwardRef<any, TextFieldProps>(function InputDateField(props, ref) {
-	const { value, onChange, ...restProps } = props;
+  const { value, onChange, ...restProps } = props;
   const [inputValue, setInputValue] = useState(value);
 
   const DAY_LENGTH = 2;
@@ -57,7 +57,7 @@ export const InputDateField = React.forwardRef<any, TextFieldProps>(function Inp
   };
   return (
     <TextField
-			ref={ref}
+      ref={ref}
       {...restProps}
       value={inputValue}
       onKeyDown={onDobKeyDown}

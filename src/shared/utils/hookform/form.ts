@@ -119,7 +119,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
     const target = { ...readOnlyFields };
     forEachFieldElement(parentElement, (element, elementName) => {
       /** Readonly is not applied for select element (HTML5) */
-      const isNotSelectElement = elementName !== 'select'
+      const isNotSelectElement = elementName !== 'select';
       if (isNotSelectElement) {
         (element as HTMLInputElement | HTMLTextAreaElement).readOnly = value;
       }

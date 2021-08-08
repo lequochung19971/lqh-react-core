@@ -69,4 +69,3 @@ export const validateEmail = createValidator(function (value) {
   }
   return null;
 });
-

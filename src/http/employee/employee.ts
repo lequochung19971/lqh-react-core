@@ -1,7 +1,7 @@
-import { HttpClient } from "@http/httpClient";
+import { HttpClient } from '@http/httpClient';
 
 export class Employee {
   static getEmployees(): Promise<any> {
-    return HttpClient.get('/employees')
+    return HttpClient.get('/employees');
   }
 }

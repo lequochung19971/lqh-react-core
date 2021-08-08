@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core';
 
 export const useEmployeeStyles = makeStyles({
   root: {
@@ -7,15 +7,15 @@ export const useEmployeeStyles = makeStyles({
   container: {
     maxHeight: 440,
   },
-	tableHeaderCell: {
-		fontWeight: 600
-	}
+  tableHeaderCell: {
+    fontWeight: 600,
+  },
 });
 
 export const useFormDialogStyles = makeStyles({
   appBar: {
-    position: 'relative'
-  }
+    position: 'relative',
+  },
 });
 
 // export const useGridStyles = makeStyles((theme) => {
@@ -23,4 +23,3 @@ export const useFormDialogStyles = makeStyles({
 //     paddingTop: s
 //   }
 // })
-

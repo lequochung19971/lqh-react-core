@@ -31,8 +31,8 @@ export default LqhRouting;
 /**
  * @decs Function that init and map current configured routes for parent route if any.
  * @author hungle
- * @param {RouteConfig[]} routes 
- * @param {string} parentUrl 
+ * @param {RouteConfig[]} routes
+ * @param {string} parentUrl
  * @returns {RouteConfig[]}
  */
 export const useRoutes = (routes: RouteConfig[], parentUrl = ''): RouteConfig[] => {

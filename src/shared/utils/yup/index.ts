@@ -11,16 +11,15 @@ declare module 'yup' {
 }
 
 export const allYupMethods: YupMethodType[] = [
-	{
-		schemaType: yup.string,
-		method: invalidFirstName
-	},
-	{
-		schemaType: yup.string,
-		method: invalidDob
-	},
-]
+  {
+    schemaType: yup.string,
+    method: invalidFirstName,
+  },
+  {
+    schemaType: yup.string,
+    method: invalidDob,
+  },
+];
 
 export * from './employee.validation';
 export * from './sample.validation';
-
