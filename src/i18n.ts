@@ -23,6 +23,9 @@ i18n
     debug: process.env.REACT_APP_ENV === 'development',
     whitelist: lngs,
     backend: {
+      // lng (en, vi, jp, ...)
+      // Default path of locale files - public/locales/lng/translation.json
+      // Change path of locale files form default path to public/locales/lng.json (en.json, vi.json, ...)
       loadPath: `${window.location.pathname}locales/{{lng}}.json`,
     },
     interpolation: {
