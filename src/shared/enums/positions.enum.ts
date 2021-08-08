@@ -32,5 +32,4 @@ export enum Positions {
   marketingAssistantPos = 'marketingAssistantPos',
   marketingManagerPos = 'marketingManagerPos',
   onlineMarketingSpecialistPos = 'marketingAnalystPos',
-
 }

@@ -5,5 +5,5 @@ type SchemaTypes = (...arg: any[]) => yup.AnySchema;
 type CustomedAnySchema = any;
 export interface YupMethodType {
   schemaType: SchemaTypes;
-	method: (this: CustomedAnySchema, ...args: any[]) => CustomedAnySchema;
-};
+  method: (this: CustomedAnySchema, ...args: any[]) => CustomedAnySchema;
+}

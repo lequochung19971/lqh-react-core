@@ -35,7 +35,7 @@ const EmployeeTable: React.FunctionComponent = () => {
   const onClose = (value: unknown) => {
     console.log(value);
     setOpen(false);
-  }
+  };
 
   return (
     <>
@@ -72,7 +72,7 @@ const EmployeeTable: React.FunctionComponent = () => {
           </Table>
         </TableContainer>
       </Paper>
-      <EmployeeFormDialog open={open} onClose={onClose}/>
+      <EmployeeFormDialog open={open} onClose={onClose} />
     </>
   );
 };

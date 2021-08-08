@@ -1,6 +1,6 @@
 import { HttpClient } from '@http/httpClient';
 import { AuthLocalStorageKeys, AuthUrIs } from '@shared/enums';
-import { IAuthAdapter, IAuthToken, IBaseTokenResult, IChangePassword, IRegisterParams  } from '@shared/types';
+import { IAuthAdapter, IAuthToken, IBaseTokenResult, IChangePassword, IRegisterParams } from '@shared/types';
 
 export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
   abstract login(email: string, password: string): Promise<any>;
@@ -48,7 +48,12 @@ export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
   }
 
   async register(params: IRegisterParams): Promise<any> {
-    const response = await HttpClient.post<IBaseTokenResult, IRegisterParams>(AuthUrIs.REGISTRATION, params, null, false) as IBaseTokenResult;
+    const response = (await HttpClient.post<IBaseTokenResult, IRegisterParams>(
+      AuthUrIs.REGISTRATION,
+      params,
+      null,
+      false,
+    )) as IBaseTokenResult;
     this.setAuthToken(response);
     return response;
   }

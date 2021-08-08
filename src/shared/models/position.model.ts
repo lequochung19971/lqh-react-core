@@ -7,10 +7,10 @@ import { BaseModel } from './base.model';
 export class PositionModel extends BaseModel {
   @Expose()
   id!: Positions;
-  
+
   @Expose()
-  name!: string
-  
+  name!: string;
+
   @Expose()
   departmentId!: Departments;
 }

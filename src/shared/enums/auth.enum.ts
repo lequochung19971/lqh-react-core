@@ -13,5 +13,5 @@ export enum AuthUrIs {
   SET_PASSWORD = '/auth/setPassword',
   REGISTRATION = '/auth/registration',
   LOGIN = '/auth/login',
-  REFRESH_TOKEN = '/auth/login'
+  REFRESH_TOKEN = '/auth/login',
 }

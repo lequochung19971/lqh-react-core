@@ -25,4 +25,4 @@ export const districtTypes: AddressType[] | string[] = [
   DistrictType.thanhPho,
   DistrictType.thiXa,
 ];
-export const wardTypes: AddressType[] | string[]= [WardType.xa, WardType.thiTran, WardType.phuong];
+export const wardTypes: AddressType[] | string[] = [WardType.xa, WardType.thiTran, WardType.phuong];

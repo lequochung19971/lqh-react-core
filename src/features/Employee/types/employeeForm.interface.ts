@@ -1,4 +1,4 @@
-import { AddressModel } from "@shared/models";
+import { AddressModel } from '@shared/models';
 
 export interface IEmployeeForm {
   firstName: string;
@@ -16,7 +16,7 @@ export interface IEmployeeForm {
     value: string;
   }[];
   test2: {
-    value1: string,
-    value2: string,
-  }
+    value1: string;
+    value2: string;
+  };
 }

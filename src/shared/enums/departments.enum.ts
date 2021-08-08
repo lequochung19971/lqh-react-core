@@ -3,5 +3,5 @@ export enum Departments {
   HRDep = 'HRDep',
   salesDep = 'salesDep',
   ITDep = 'ITDep',
-  marketingDep = 'marketingDep'
+  marketingDep = 'marketingDep',
 }
