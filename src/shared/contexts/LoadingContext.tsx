@@ -1,24 +1,25 @@
-import { createContext } from '@shared/utils';
 import { useState, Dispatch, SetStateAction } from 'react';
+
+import { createContext } from '@shared/utils';
 
 interface LoadingContextRef {
   isPageLoading: boolean;
   setIsPageLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-export const [LoadingProvider, useLoadingContext, LoadingContext] = createContext<
-  LoadingContextRef,
-  { test?: boolean }
->({
-  defaultValue: {} as LoadingContextRef,
-  useProvider: () => {
-    const [isPageLoading, setIsPageLoading] = useState(false);
+export const [LoadingContext, useLoadingContext] = createContext<LoadingContextRef>({} as LoadingContextRef);
 
-    const instances: LoadingContextRef = {
-      isPageLoading,
-      setIsPageLoading,
-    };
+type Props = {
+  test: boolean;
+};
 
-    return instances;
-  },
-});
+export const LoadingProvider: React.FunctionComponent<Props> = (props) => {
+  const [isPageLoading, setIsPageLoading] = useState(false);
+
+  const instances: LoadingContextRef = {
+    isPageLoading,
+    setIsPageLoading,
+  };
+
+  return <LoadingContext.Provider value={instances}>{props.children}</LoadingContext.Provider>;
+};

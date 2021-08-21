@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { IEmployeeForm } from '../types/employeeForm.interface';
-import { InputDateField, LqhButton, SelectField } from '@shared/ui-elements';
-import { Box, Grid, TextField } from '@material-ui/core';
 import dayjs from 'dayjs';
+import React, { useState } from 'react';
+
+import { Box, Grid, TextField } from '@material-ui/core';
+import { SelectDataSource } from '@shared/types/selectDataSource.type';
+import { InputDateField, LqhButton, SelectField } from '@shared/ui-elements';
+import { Controller, useFieldArray, useForm, ValidationContext } from '@shared/utils/hookform';
+
 import { departmentDataSource } from '../configs/departmentConfig';
 import { defaultValues, validators } from '../configs/employeFormConfig';
 import { positionDataSource } from '../configs/positionConfig';
-import { SelectDataSource } from '@shared/types/selectDataSource.type';
+import { IEmployeeForm } from '../types/employeeForm.interface';
 import AddressDialogField from './AddressDialogField';
-import { Controller, useFieldArray, useForm, ValidationContext } from '@shared/utils/hookform';
 
 const EmployeeForm: React.FunctionComponent = () => {
   const { control, handleSubmit, getErrorsMui, setValue, getValues, setDisable } = useForm<

@@ -1,6 +1,8 @@
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider as OriginalThemeProvider } from '@material-ui/core/styles';
+
 import { DARK_THEME, LIGHT_THEME } from './theme';
+
 /**
  * Material UI Provider with Light and Dark themes depending on global "state.darkMode"
  */

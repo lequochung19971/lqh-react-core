@@ -3,5 +3,24 @@
   "trailingComma": "all",
   "singleQuote": true,
   "printWidth": 120,
-  "tabWidth": 2
+  "tabWidth": 2,
+  "importOrder": [
+    "^@(.*)/(.*)$",
+    "^@app",
+    "^@app/(.*)$",
+    "^@assets",
+    "^@assets/(.*)$",
+    "^@guards",
+    "^@guards/(.*)$",
+    "^@store",
+    "^@store/(.*)$",
+    "^@http",
+    "^@http/(.*)$",
+    "^@shared",
+    "^@shared/(.*)$",
+    "^@features",
+    "^@features/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true
 }

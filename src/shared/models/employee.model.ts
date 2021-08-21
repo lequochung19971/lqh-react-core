@@ -1,12 +1,14 @@
-import 'reflect-metadata';
 import { Expose, Type } from 'class-transformer';
-import { DepartmentModel } from './department.model';
-import { Positions } from '@shared/enums/positions.enum';
-import { PositionModel } from './position.model';
+import 'reflect-metadata';
+
 import { Gender } from '@shared/enums/gender.enum';
+import { Positions } from '@shared/enums/positions.enum';
+
 import { AddressModel } from './address.model';
-import { IDCardModel } from './idCard.model';
 import { BaseModel } from './base.model';
+import { DepartmentModel } from './department.model';
+import { IDCardModel } from './idCard.model';
+import { PositionModel } from './position.model';
 
 export class EmployeeModel extends BaseModel {
   @Expose()

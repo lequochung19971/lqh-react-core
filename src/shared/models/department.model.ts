@@ -1,5 +1,6 @@
-import 'reflect-metadata';
 import { Expose } from 'class-transformer';
+import 'reflect-metadata';
+
 import { BaseModel } from './base.model';
 
 export class DepartmentModel extends BaseModel {
