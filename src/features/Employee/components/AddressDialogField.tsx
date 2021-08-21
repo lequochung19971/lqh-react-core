@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
+
 import {
   Box,
   DialogActions,
@@ -10,19 +12,17 @@ import {
   ListItemText,
   TextFieldProps,
 } from '@material-ui/core';
-import { InputDialogField, LqhButton } from '@shared/ui-elements';
-import provincesJson from '@shared/json-configs/provinces.json';
+import CloseIcon from '@material-ui/icons/Close';
+import { AddressType, provinceTypes, districtTypes, wardTypes } from '@shared/enums';
 import districtsJson from '@shared/json-configs/districts.json';
+import provincesJson from '@shared/json-configs/provinces.json';
 import wardsJson from '@shared/json-configs/wards.json';
 import { Address, AddressModel } from '@shared/models';
-import CloseIcon from '@material-ui/icons/Close';
-import { useRef } from 'react';
-import { AddressType, provinceTypes, districtTypes, wardTypes } from '@shared/enums';
+import { InputDialogField, LqhButton } from '@shared/ui-elements';
 
 export const provinces = provincesJson.map((p) => new Address(p));
 export const districts = districtsJson.map((d) => new Address(d));
 export const wards = wardsJson.map((w) => new Address(w));
-console.log(provinces);
 type AddressDialogFieldProps = TextFieldProps & {
   onSave?: () => void;
 };
@@ -51,8 +51,6 @@ const AddressDialogField = React.forwardRef<any, AddressDialogFieldProps>(functi
       addressModel.current.ward = address;
       return;
     }
-
-    console.log(address);
   };
 
   const handleCloseDialog = () => {

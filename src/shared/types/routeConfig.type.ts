@@ -1,4 +1,5 @@
-import { RedirectProps, RouteProps } from 'react-router-dom';
+import * as H from 'history';
+import { RouteProps } from 'react-router-dom';
 
 export type OmitNative<T, K extends string | number | symbol> = { [P in Exclude<keyof T, K>]: T[P] };
 
@@ -7,8 +8,11 @@ export type RouteGuard = {
   redirectBackTo?: string;
 };
 
-export type RouteConfig<T = any> = RouteProps<string> &
+export type RouteConfig<T = unknown> = RouteProps<string> &
   OmitNative<T, keyof RouteProps> & {
-    redirect?: RedirectProps;
+    redirectTo?: H.LocationDescriptor;
+    redirectPush?: boolean;
+    redirectFrom?: string;
     guard?: RouteGuard;
+    unwrapped?: boolean;
   };

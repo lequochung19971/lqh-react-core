@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 /* eslint-disable @typescript-eslint/ban-types */
 import { get, isEqual, set } from 'lodash';
 import { useLayoutEffect, useRef, useState } from 'react';
@@ -11,6 +12,7 @@ import {
   FieldError,
   Resolver,
 } from 'react-hook-form';
+
 import { ConfiguredValidatorFn } from './types';
 import { forEachFieldElement, getCurrentHTMLElementRef, getFieldsNameFromFieldsRef, isLiveInDOM } from './utils';
 import { createValidationContext, ValidationContext, validationResolver } from './validationResolver';

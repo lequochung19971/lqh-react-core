@@ -1,20 +1,31 @@
-import React from 'react';
-import { RouteConfig } from '@shared/types';
+import React, { lazy } from 'react';
+
 import { LqhRouting } from '@shared/components';
-import { useRoutes } from '@shared/components/Routers/LqhRouting';
-import EmployeesPage from './pages/EmployeesPage';
+import { useRoutes } from '@shared/components/Routers/useRoutes';
+
+import EmployeesDetailPage from './pages/EmployeesDetailPage';
 
 const EmployeeRouting: React.FunctionComponent = () => {
-  const routes: RouteConfig[] = useRoutes([
-    {
-      path: '/',
-      exact: true,
-      component: EmployeesPage,
-    },
-    {
-      path: '/detail',
-    },
-  ]);
+  const [routes] = useRoutes({
+    routes: [
+      {
+        path: '/',
+        exact: true,
+        component: lazy(() => import('./pages/EmployeesPage')),
+      },
+      {
+        path: '/detail',
+        exact: true,
+        component: EmployeesDetailPage,
+        unwrapped: true,
+      },
+      {
+        path: '*',
+        redirectTo: '/page-not-foundd',
+      },
+    ],
+    isChildren: true,
+  });
 
   return <LqhRouting routes={routes} />;
 };

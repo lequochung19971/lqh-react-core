@@ -44,7 +44,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "prettier:check": "npx prettier --check ./src"
+    "prettier:format": "prettier --config .prettierrc src/**/*{.ts,.tsx} --write"
   },
   "eslintConfig": {
     "plugins": [
@@ -74,6 +74,7 @@
     ]
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^2.0.4",
     "@types/lodash": "^4.14.168",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",

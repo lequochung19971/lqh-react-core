@@ -1,4 +1,5 @@
 import { BaseAuth } from 'src/auth/baseAuth';
+
 import { AuthLocalStorageKeys, TokenType } from '../enums/auth.enum';
 
 export interface IAuthToken {

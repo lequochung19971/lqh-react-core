@@ -1,8 +1,7 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-
-import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import Backend from 'i18next-http-backend';
+import { initReactI18next } from 'react-i18next';
 
 const lngs = ['vi', 'en'];
 
@@ -26,7 +25,7 @@ i18n
       // lng (en, vi, jp, ...)
       // Default path of locale files - public/locales/lng/translation.json
       // Change path of locale files form default path to public/locales/lng.json (en.json, vi.json, ...)
-      loadPath: `${window.location.pathname}locales/{{lng}}.json`,
+      loadPath: '/locales/{{lng}}.json',
     },
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
