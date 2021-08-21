@@ -1,6 +1,5 @@
 import { Expose, Type } from 'class-transformer';
 import 'reflect-metadata';
-
 import { Address } from './address.model';
 import { BaseModel } from './base.model';
 

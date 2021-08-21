@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { Box } from '@material-ui/core';
-
 import { useShellStyles } from './useShellStyle';
 
 const ShellMain: React.FunctionComponent = (props) => {

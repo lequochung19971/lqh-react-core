@@ -1,8 +1,6 @@
 import React from 'react';
-
 import { AppBar, Box, Dialog, DialogProps, IconButton, Toolbar, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-
 import { useFormDialogStyles } from '../styles/styles';
 import EmployeeForm from './EmployeeForm';
 

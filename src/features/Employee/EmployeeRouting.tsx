@@ -1,8 +1,6 @@
 import React, { lazy } from 'react';
-
 import { LqhRouting } from '@shared/components';
 import { useRoutes } from '@shared/components/Routers/useRoutes';
-
 import EmployeesDetailPage from './pages/EmployeesDetailPage';
 
 const EmployeeRouting: React.FunctionComponent = () => {

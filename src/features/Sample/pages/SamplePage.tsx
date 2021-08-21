@@ -1,11 +1,9 @@
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-
 import { Button, styled } from '@material-ui/core';
 import { useRouterContext } from '@shared/components/Routers/RouterContext';
 import { pageLoading } from '@store/loading/slices';
-
 import { useDispatch } from '@store';
 
 const Wrapper = styled('div')({

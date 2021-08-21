@@ -1,7 +1,5 @@
 import * as yup from 'yup';
-
 import { YupMethodType } from '@shared/types';
-
 import { invalidFirstName } from './employee.validation';
 import { invalidDob } from './sample.validation';
 

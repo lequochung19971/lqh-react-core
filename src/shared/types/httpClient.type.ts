@@ -1,5 +1,4 @@
 import { AxiosError, AxiosInterceptorManager, AxiosRequestConfig, AxiosResponse } from 'axios';
-
 import { AuthConfig } from './auth.type';
 
 declare global {

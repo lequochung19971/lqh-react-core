@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
-
 import Login from '@features/Login';
 import { LqhRouting } from '@shared/components';
 import PageNotFound from '@shared/components/PageNotFound';
 import { useRouterContext } from '@shared/components/Routers/RouterContext';
 import { useRoutes } from '@shared/components/Routers/useRoutes';
 import { RouteConfig } from '@shared/types';
-
 import FeatureRouting from '@features';
 
 const AppRouting: React.FunctionComponent = () => {

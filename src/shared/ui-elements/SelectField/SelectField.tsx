@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { MenuItem, TextField, TextFieldProps } from '@material-ui/core';
 import { nanoid } from '@reduxjs/toolkit';
 import { SelectDataSource } from '@shared/types/selectDataSource.type';

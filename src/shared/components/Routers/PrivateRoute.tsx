@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Redirect, RedirectProps, Route } from 'react-router-dom';
-
 import { RouteConfig } from '@shared/types';
 
 const PrivateRoute: React.FunctionComponent<RouteConfig> = (props) => {

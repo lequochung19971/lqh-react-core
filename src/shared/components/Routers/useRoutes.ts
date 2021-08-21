@@ -1,9 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-
 import { RouteConfig } from '@shared/types';
-
 import { useRouterContext } from './RouterContext';
 import { filterMainRoutes } from './utils';
 

@@ -1,9 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
-
 import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-
 import { useShellStyles } from './useShellStyle';
 
 type Props = {

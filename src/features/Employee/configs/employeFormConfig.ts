@@ -1,7 +1,6 @@
 import { AddressModel } from '@shared/models';
 import { maxLength, minLength, required, validateEmail, validatePhoneNumber } from '@shared/utils';
 import { createValidationForm } from '@shared/utils/hookform/validationResolver';
-
 import { IEmployeeForm } from '../types/employeeForm.interface';
 
 export const defaultValues: IEmployeeForm = {

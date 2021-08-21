@@ -1,6 +1,5 @@
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider as OriginalThemeProvider } from '@material-ui/core/styles';
-
 import { DARK_THEME, LIGHT_THEME } from './theme';
 
 /**

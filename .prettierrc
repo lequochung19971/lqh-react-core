@@ -21,6 +21,5 @@
     "^@features",
     "^@features/(.*)$",
     "^[./]"
-  ],
-  "importOrderSeparation": true
+  ]
 }

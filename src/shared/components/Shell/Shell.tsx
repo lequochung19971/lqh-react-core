@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { Box } from '@material-ui/core';
-
 import PageLoading from '../PageLoading/PageLoading';
 import ShellHeader from './ShellHeader';
 import ShellMain from './ShellMain';

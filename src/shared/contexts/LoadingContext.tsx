@@ -1,5 +1,4 @@
 import { useState, Dispatch, SetStateAction } from 'react';
-
 import { createContext } from '@shared/utils';
 
 interface LoadingContextRef {

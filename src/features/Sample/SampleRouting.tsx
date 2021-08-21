@@ -1,8 +1,6 @@
 import React from 'react';
-
 import { LqhRouting } from '@shared/components';
 import { useRoutes } from '@shared/components/Routers/useRoutes';
-
 import SamplePage from './pages/SamplePage';
 
 const SampleRouting: React.FunctionComponent = () => {

@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-
 import { YupMethodType } from '@shared/types';
 
 export const yupAddMethods = (validatorMethods: YupMethodType[]): void => {

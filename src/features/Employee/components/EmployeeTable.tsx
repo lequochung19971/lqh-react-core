@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import {
   Box,
   Button,
@@ -13,7 +12,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-
 import employeeColumnsConfig from '../configs/employeeColumnsConfig';
 import { useEmployeeStyles } from '../styles/styles';
 import EmployeeFormDialog from './EmployeeFormDialog';

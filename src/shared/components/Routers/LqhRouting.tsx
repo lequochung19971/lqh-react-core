@@ -1,8 +1,6 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
-
 import { RouteConfig } from '@shared/types';
-
 import { PrivateRoute } from '..';
 
 interface Props {

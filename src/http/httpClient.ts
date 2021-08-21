@@ -1,6 +1,5 @@
 import axios from 'axios';
 import queryString from 'query-string';
-
 import { HttpClientErrorModel } from '@shared/models/httpClientError.model';
 import {
   HttpClientConfig,

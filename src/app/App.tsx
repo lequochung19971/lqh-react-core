@@ -1,14 +1,11 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-
 import { PageLoading, ProvidersGroup } from '@shared/components';
 import { withProvider } from '@shared/components/ProvidersGroup/withProvider';
 import { RouterProvider } from '@shared/components/Routers/RouterContext';
 import { LoadingProvider } from '@shared/contexts';
 import ThemeProvider from '@shared/styles/theme/ThemeProvider';
-
 import { Provider, ProviderProps, store } from '@store';
-
 import AppInit from './AppInit';
 import AppRouting from './AppRouting';
 

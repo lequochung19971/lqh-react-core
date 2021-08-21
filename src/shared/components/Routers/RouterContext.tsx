@@ -1,9 +1,7 @@
 import { unionBy } from 'lodash';
 import { useState } from 'react';
-
 import { RouteConfig } from '@shared/types';
 import { createContext } from '@shared/utils';
-
 import { filterUnwrappedRoutes } from './utils';
 
 interface RouterContextRef {

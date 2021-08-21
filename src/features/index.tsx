@@ -1,5 +1,4 @@
 import React, { lazy } from 'react';
-
 import { LqhRouting, Shell } from '@shared/components';
 import { useRoutes } from '@shared/components/Routers/useRoutes';
 

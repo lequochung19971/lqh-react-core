@@ -2,7 +2,6 @@
 import { get, isEqual, set } from 'lodash';
 import { useMemo, useRef } from 'react';
 import { Resolver, FieldError, DeepMap, FieldValues } from 'react-hook-form';
-
 import { DeepReadonly, ValidationResult, ValidatorFn, ValidatorFnAllType, ConfiguredValidatorFn } from './types';
 import { clearObjectKeepReference, flattenObject } from './utils';
 
