@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Redirect, RedirectProps, Route } from 'react-router-dom';
 import { RouteConfig } from '@shared/types';
 
-const PrivateRoute: React.FunctionComponent<RouteConfig> = (props) => {
+const AuthenticateRoute: React.FunctionComponent<RouteConfig> = (props) => {
   const {
     guard: { canActive = true, redirectBackTo = '' } = {},
     redirectTo,
@@ -36,4 +36,4 @@ const PrivateRoute: React.FunctionComponent<RouteConfig> = (props) => {
   return <>{elements}</>;
 };
 
-export default PrivateRoute;
+export default AuthenticateRoute;

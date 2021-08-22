@@ -1,5 +1,5 @@
 import React from 'react';
-import { LqhRouting } from '@shared/components';
+import { Routing } from '@shared/components';
 import { useRoutes } from '@shared/components/Routers/useRoutes';
 import SamplePage from './pages/SamplePage';
 
@@ -15,7 +15,7 @@ const SampleRouting: React.FunctionComponent = () => {
     isChildren: true,
   });
 
-  return <LqhRouting routes={routes} />;
+  return <Routing routes={routes} />;
 };
 
 export default SampleRouting;

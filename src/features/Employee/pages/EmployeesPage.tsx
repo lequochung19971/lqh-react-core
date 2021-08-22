@@ -8,6 +8,7 @@ const EmployeesPage: React.FunctionComponent = () => {
   return (
     <>
       <Link to="/employee/detail">Detail</Link>
+      <Link to="/employee/other">Other</Link>
       <EmployeeTable />
     </>
   );

@@ -3,7 +3,6 @@ import { Dispatch, useCallback, useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { RouteConfig } from '@shared/types';
 import { useRouterContext } from './RouterContext';
-import { filterMainRoutes } from './utils';
 
 interface UseRoutesProps {
   routes: RouteConfig[];
@@ -23,7 +22,7 @@ export const useRoutes = (props: UseRoutesProps): UseRoutesResult => {
   const { path } = useRouteMatch();
   const { loadRouteConfigs } = useRouterContext();
 
-  const mapRoute = useCallback(
+  const mapRoutes = useCallback(
     (routeConfigs: RouteConfig[]) => {
       if (!isChildren) {
         return routeConfigs;
@@ -46,12 +45,11 @@ export const useRoutes = (props: UseRoutesProps): UseRoutesResult => {
   );
 
   const [routes, setRoutes] = useState(() => {
-    const result = mapRoute(routeConfigs);
-    return filterMainRoutes(result);
+    return mapRoutes(routeConfigs);
   });
 
   useEffect(() => {
-    loadRouteConfigs(mapRoute(routeConfigs));
+    loadRouteConfigs(mapRoutes(routeConfigs));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

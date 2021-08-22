@@ -1,8 +1,10 @@
 import React, { lazy } from 'react';
-import { LqhRouting, Shell } from '@shared/components';
+import { Switch } from 'react-router-dom';
+import { Routing, Shell } from '@shared/components';
 import { useRoutes } from '@shared/components/Routers/useRoutes';
+import { filterMainRoutes, filterUnwrappedRoutes, renderRoutes } from '@shared/components/Routers/utils';
 
-const FeatureRouting: React.FunctionComponent = () => {
+const Features: React.FunctionComponent = () => {
   const [routes] = useRoutes({
     routes: [
       {
@@ -19,6 +21,11 @@ const FeatureRouting: React.FunctionComponent = () => {
         component: lazy(() => import('./Employee')),
       },
       {
+        path: '/employee/detail',
+        component: lazy(() => import('./Employee/pages/EmployeesDetailPage')),
+        unwrapped: true,
+      },
+      {
         path: '*',
         redirectTo: '/page-not-found',
       },
@@ -26,12 +33,13 @@ const FeatureRouting: React.FunctionComponent = () => {
   });
 
   return (
-    <>
+    <Switch>
+      {renderRoutes(filterUnwrappedRoutes(routes))}
       <Shell>
-        <LqhRouting routes={routes} />
+        <Routing routes={filterMainRoutes(routes)} />
       </Shell>
-    </>
+    </Switch>
   );
 };
 
-export default FeatureRouting;
+export default Features;

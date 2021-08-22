@@ -1,7 +1,9 @@
 import React, { lazy } from 'react';
-import { LqhRouting } from '@shared/components';
+import { Routing } from '@shared/components';
 import { useRoutes } from '@shared/components/Routers/useRoutes';
-import EmployeesDetailPage from './pages/EmployeesDetailPage';
+
+const EmployeesPage = lazy(() => import('./pages/EmployeesPage'));
+const EmployeesDetailPage = lazy(() => import('./pages/EmployeesDetailPage'));
 
 const EmployeeRouting: React.FunctionComponent = () => {
   const [routes] = useRoutes({
@@ -9,13 +11,12 @@ const EmployeeRouting: React.FunctionComponent = () => {
       {
         path: '/',
         exact: true,
-        component: lazy(() => import('./pages/EmployeesPage')),
+        component: EmployeesPage,
       },
       {
         path: '/detail',
         exact: true,
         component: EmployeesDetailPage,
-        unwrapped: true,
       },
       {
         path: '*',
@@ -25,7 +26,7 @@ const EmployeeRouting: React.FunctionComponent = () => {
     isChildren: true,
   });
 
-  return <LqhRouting routes={routes} />;
+  return <Routing routes={routes} />;
 };
 
 export default EmployeeRouting;
