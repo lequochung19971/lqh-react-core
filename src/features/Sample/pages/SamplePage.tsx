@@ -1,10 +1,13 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, styled } from '@material-ui/core';
+import { ConfirmDialog } from '@shared/components/Dialog/ConfirmDialog/ConfirmDialog';
+import useDialog from '@shared/components/Dialog/useDialog';
 import { useRouterContext } from '@shared/components/Routers/RouterContext';
 import { pageLoading } from '@store/loading/slices';
 import { useDispatch } from '@store';
+import useConfirmDialog from '@shared/components/Dialog/ConfirmDialog/useConfirmDialog';
 
 const Wrapper = styled('div')({
   '& img': {
@@ -22,7 +25,26 @@ const SamplePage: React.FunctionComponent = () => {
   };
   const { i18n, t } = useTranslation();
   const { routeConfigs } = useRouterContext();
-  // console.log(routeConfigs);
+  const confirmDialog = useConfirmDialog();
+  const [count, setCount] = useState(1);
+  const [count2, setCount2] = useState(1);
+
+  useEffect(() => {
+    setCount2(20);
+  }, [count]);
+
+  const handleOpenDialog = () => {
+    confirmDialog.open().then((value: any) => {
+      console.log(value);
+    });
+  };
+
+  const handleOpenDialog2 = () => {
+    confirmDialog.open().then((value: any) => {
+      console.log(value);
+    });
+  };
+
   return (
     <Suspense fallback={<div>Loading....</div>}>
       <div>Test Translation: {t('test')}</div>
@@ -47,6 +69,14 @@ const SamplePage: React.FunctionComponent = () => {
       </Wrapper>
       <Link to="/login">Login</Link>
       <Link to="/other">Other link</Link>
+      <Button color="secondary" onClick={handleOpenDialog}>
+        Open dialog 1
+      </Button>
+      <Button color="secondary">Close dialog 1</Button>
+      <Button color="primary" onClick={handleOpenDialog2}>
+        Open dialog 2
+      </Button>
+      <Button color="primary">Close dialog 2</Button>
     </Suspense>
   );
 };

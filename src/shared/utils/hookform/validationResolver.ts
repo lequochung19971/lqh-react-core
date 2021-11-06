@@ -94,6 +94,10 @@ export const createValidationContext = <TFieldValues>(): ValidationContext<TFiel
   return useMemo(() => new ValidationContext<TFieldValues>(), []);
 };
 
+// export const createValidationContext = <TFieldValues>(): ValidationContext<TFieldValues> => {
+//   return useRef(new ValidationContext<TFieldValues>()).current;
+// };
+
 /**
  * @desc
  * - Function that generates path to get configured validator functions (ConfiguredValidatorFn).

@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { PageLoading, ProvidersGroup } from '@shared/components';
+import { DialogProvider } from '@shared/components/Dialog/DialogContext';
 import { withProvider } from '@shared/components/ProvidersGroup/withProvider';
 import { RouterProvider } from '@shared/components/Routers/RouterContext';
 import { LoadingProvider } from '@shared/contexts';
@@ -20,11 +21,13 @@ const App: React.FunctionComponent = () => {
   return (
     <ProvidersGroup providers={providers}>
       <Suspense fallback={<PageLoading loading={true} />}>
-        <RouterProvider>
-          <BrowserRouter>
-            <AppRouting />
-          </BrowserRouter>
-        </RouterProvider>
+        <DialogProvider>
+          <RouterProvider>
+            <BrowserRouter>
+              <AppRouting />
+            </BrowserRouter>
+          </RouterProvider>
+        </DialogProvider>
       </Suspense>
     </ProvidersGroup>
   );
