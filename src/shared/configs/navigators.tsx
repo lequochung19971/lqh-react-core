@@ -1,5 +1,5 @@
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { NavigatorConfig } from '@shared/types';
 
 export const navigators: NavigatorConfig[] = [

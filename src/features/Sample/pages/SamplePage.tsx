@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button, styled } from '@material-ui/core';
+import { Button, styled } from '@mui/material';
 import { ConfirmDialog } from '@shared/components/Dialog/ConfirmDialog/ConfirmDialog';
 import useDialog from '@shared/components/Dialog/useDialog';
 import { useRouterContext } from '@shared/components/Routers/RouterContext';

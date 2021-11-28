@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Button, Grid, TextField } from '@mui/material';
+import { Box } from '@mui/system';
 import { SelectDataSource } from '@shared/types/selectDataSource.type';
-import { InputDateField, LqhButton, SelectField } from '@shared/ui-elements';
+import { InputDateField, SelectField } from '@shared/ui-elements';
 import { Controller, useFieldArray, useForm, ValidationContext } from '@shared/utils/hookform';
 import { departmentDataSource } from '../configs/departmentConfig';
 import { defaultValues, validators } from '../configs/employeFormConfig';
@@ -206,31 +207,30 @@ const EmployeeForm: React.FunctionComponent = () => {
                     />
                   </Grid>
                   <Grid key={`btn-${index}`} item xs={3}>
-                    <LqhButton color="secondary" variant="contained" size="large" onClick={() => remove(index)}>
+                    <Button color="secondary" variant="contained" size="large" onClick={() => remove(index)}>
                       Remove
-                    </LqhButton>
+                    </Button>
                   </Grid>
                 </>
               );
             })}
 
             <Grid item xs={12}>
-              <LqhButton type="submit" color="primary" variant="contained" size="large" mr="10px">
+              <Button type="submit" color="primary" variant="contained" size="large" sx={{ mr: '10px' }}>
                 Save
-              </LqhButton>
-              <LqhButton color="secondary" variant="contained" size="large">
+              </Button>
+              <Button color="secondary" variant="contained" size="large">
                 Cancel
-              </LqhButton>
-              <LqhButton
+              </Button>
+              <Button
+                sx={{ ml: '10px' }}
                 type="button"
-                color="default"
                 variant="contained"
                 size="large"
-                ml="10px"
                 onClick={() => append({ value: '123' })}
               >
                 Append Field
-              </LqhButton>
+              </Button>
             </Grid>
           </Grid>
         </Box>

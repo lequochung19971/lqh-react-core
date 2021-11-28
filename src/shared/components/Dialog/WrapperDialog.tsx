@@ -1,4 +1,4 @@
-import { Dialog } from '@material-ui/core';
+import { Dialog } from '@mui/material';
 import { DialogRef, DialogState } from './type';
 
 const WrapperDialog: React.FunctionComponent<DialogState> = (props) => {

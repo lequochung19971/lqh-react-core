@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { TextField, TextFieldProps } from '@material-ui/core';
+import { TextField, TextFieldProps } from '@mui/material';
 
 export const InputDateField = React.forwardRef<any, TextFieldProps>(function InputDateField(props, ref) {
   const { value, onChange, ...restProps } = props;

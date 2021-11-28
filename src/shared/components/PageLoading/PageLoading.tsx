@@ -1,6 +1,6 @@
 import React from 'react';
-import { Backdrop, styled } from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Backdrop, styled } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { selectIsPageLoading } from '@store/loading/selectors';
 import { useSelector } from '@store';
 

@@ -1,11 +1,10 @@
 import React from 'react';
-import { AppBar, Box, Dialog, DialogProps, IconButton, Toolbar, Typography } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { useFormDialogStyles } from '../styles/styles';
+import { css } from '@emotion/react';
+import CloseIcon from '@mui/icons-material/Close';
+import { AppBar, Box, Dialog, DialogProps, IconButton, Toolbar, Typography } from '@mui/material';
 import EmployeeForm from './EmployeeForm';
 
 const EmployeeFormDialog: React.FunctionComponent<DialogProps> = (props) => {
-  const classes = useFormDialogStyles();
   const { onClose, ...restProps } = props;
 
   const handleClose = () => {
@@ -17,7 +16,7 @@ const EmployeeFormDialog: React.FunctionComponent<DialogProps> = (props) => {
   return (
     <>
       <Dialog fullScreen {...restProps} onClose={onClose}>
-        <AppBar className={classes.appBar}>
+        <AppBar sx={{ position: 'relative' }}>
           <Toolbar>
             <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
               <Box display="flex" flexWrap="nowrap" alignItems="center">

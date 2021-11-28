@@ -1,4 +1,4 @@
-import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { WrapperDialogProps } from '../type';
 
 export const ConfirmDialog: React.FunctionComponent<WrapperDialogProps<{}>> = (props) => {

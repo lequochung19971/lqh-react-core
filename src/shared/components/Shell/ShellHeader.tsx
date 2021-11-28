@@ -1,8 +1,7 @@
-import clsx from 'clsx';
 import React from 'react';
-import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import { useShellStyles } from './useShellStyle';
+import MenuIcon from '@mui/icons-material/Menu';
+import { IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar } from './style';
 
 type Props = {
   onOpenDrawer: () => void;
@@ -10,25 +9,18 @@ type Props = {
 };
 
 const ShellHeader: React.FunctionComponent<Props> = (props) => {
-  const classes = useShellStyles();
-
   const { onOpenDrawer, open } = props;
 
   return (
-    <AppBar
-      position="fixed"
-      className={clsx(classes.appBar, {
-        [classes.appBarShift]: open,
-      })}
-    >
-      <Toolbar>
+    <AppBar position="fixed" open={open}>
+      <Toolbar sx={{ padding: '0!important' }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"
           onClick={onOpenDrawer}
           edge="start"
           hidden={open}
-          className={classes.menuButton}
+          sx={(theme) => ({ marginLeft: theme.spacing(3), marginRight: theme.spacing(3) })}
         >
           <MenuIcon />
         </IconButton>

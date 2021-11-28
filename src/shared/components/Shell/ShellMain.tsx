@@ -1,13 +1,11 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
-import { useShellStyles } from './useShellStyle';
+import { Box } from '@mui/material';
+import { Header } from './style';
 
 const ShellMain: React.FunctionComponent = (props) => {
-  const classes = useShellStyles();
-
   return (
     <Box p={2} flexGrow={1}>
-      <div className={classes.toolbar} />
+      <Header />
       {props.children}
     </Box>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
   Button,
@@ -10,10 +11,8 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+} from '@mui/material';
 import employeeColumnsConfig from '../configs/employeeColumnsConfig';
-import { useEmployeeStyles } from '../styles/styles';
 import EmployeeFormDialog from './EmployeeFormDialog';
 
 const mockData = [
@@ -28,7 +27,6 @@ const mockData = [
 ];
 
 const EmployeeTable: React.FunctionComponent = () => {
-  const classes = useEmployeeStyles();
   const employees = mockData;
   const [open, setOpen] = useState(false);
 
@@ -39,19 +37,23 @@ const EmployeeTable: React.FunctionComponent = () => {
 
   return (
     <>
-      <Paper className={classes.root}>
+      <Paper
+        sx={{
+          width: '100%',
+        }}
+      >
         <Box display="flex" justifyContent="space-between" width="100%" p="1rem">
           <Typography variant="h6">Employees</Typography>
           <Button variant="contained" color="secondary" onClick={() => setOpen(true)} startIcon={<AddIcon />}>
             Add Employee
           </Button>
         </Box>
-        <TableContainer className={classes.container}>
+        <TableContainer sx={{ maxHeight: '400px' }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 {employeeColumnsConfig.map((column) => (
-                  <TableCell key={column.id} className={classes.tableHeaderCell}>
+                  <TableCell key={column.id} sx={{ fontWeight: 600 }}>
                     {column.label}
                   </TableCell>
                 ))}

@@ -3,7 +3,7 @@
  * See for details: https://material-ui.com/customization/default-theme/?expand-path=$.palette
  * Martial Color tool: https://material.io/resources/color
  */
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
 /**
  * Material UI theme "front" colors, "back" colors are different for Light and Dark modes
@@ -21,9 +21,8 @@ const FRONT_COLORS = {
 /**
  * Material UI theme config for "Light Mode"
  */
-export const LIGHT_THEME = createMuiTheme({
+export const LIGHT_THEME = createTheme({
   palette: {
-    type: 'light',
     // background: {
     //   paper: '#f5f5f5', // Gray 100 - Background of "Paper" based component
     //   default: '#FFFFFF',
@@ -35,9 +34,8 @@ export const LIGHT_THEME = createMuiTheme({
 /**
  * Material UI theme config for "Dark Mode"
  */
-export const DARK_THEME = createMuiTheme({
+export const DARK_THEME = createTheme({
   palette: {
-    type: 'dark',
     // background: {
     //   paper: '#424242', // Gray 800 - Background of "Paper" based component
     //   default: '#303030',

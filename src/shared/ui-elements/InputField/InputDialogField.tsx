@@ -1,7 +1,7 @@
 import React from 'react';
-import { Dialog, DialogProps } from '@material-ui/core';
-import { TextField } from '@material-ui/core';
-import { TextFieldProps } from '@material-ui/core';
+import { Dialog, DialogProps } from '@mui/material';
+import { TextField } from '@mui/material';
+import { TextFieldProps } from '@mui/material';
 
 type InputDialogFieldProps = TextFieldProps & {
   dialogProps?: DialogProps;

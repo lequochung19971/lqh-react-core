@@ -1,4 +1,4 @@
-import { DialogProps } from '@material-ui/core';
+import { DialogProps } from '@mui/material';
 
 export type PromiseResolveReject<T = unknown> = [
   Promise<T> | null | undefined,

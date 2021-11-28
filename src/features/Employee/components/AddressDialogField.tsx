@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
-  Box,
+  Button,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -10,14 +11,14 @@ import {
   ListItem,
   ListItemText,
   TextFieldProps,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import { Box } from '@mui/system';
 import { AddressType, provinceTypes, districtTypes, wardTypes } from '@shared/enums';
 import districtsJson from '@shared/json-configs/districts.json';
 import provincesJson from '@shared/json-configs/provinces.json';
 import wardsJson from '@shared/json-configs/wards.json';
 import { Address, AddressModel } from '@shared/models';
-import { InputDialogField, LqhButton } from '@shared/ui-elements';
+import { InputDialogField } from '@shared/ui-elements';
 
 export const provinces = provincesJson.map((p) => new Address(p));
 export const districts = districtsJson.map((d) => new Address(d));
@@ -101,12 +102,12 @@ const AddressDialogField = React.forwardRef<any, AddressDialogFieldProps>(functi
         </List>
       </DialogContent>
       <DialogActions>
-        <LqhButton color="secondary" variant="contained" size="large">
+        <Button color="secondary" variant="contained" size="large">
           Save
-        </LqhButton>
-        <LqhButton color="secondary" variant="outlined" size="large">
+        </Button>
+        <Button color="secondary" variant="outlined" size="large">
           Cancel
-        </LqhButton>
+        </Button>
       </DialogActions>
     </InputDialogField>
   );

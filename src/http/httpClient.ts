@@ -72,7 +72,7 @@ export class HttpClient {
       const response = await axios.get(this.getUri(uri), config);
       return this.success<T>(response);
     } catch (error) {
-      throw this.error(error);
+      throw this.error(error as HttpClientError);
     }
   }
 
@@ -87,7 +87,7 @@ export class HttpClient {
       const response: HttpClientResponse<T> = await axios.post<T>(this.getUri(uri), payload, config);
       return this.success<T>(response);
     } catch (error) {
-      throw this.error(error);
+      throw this.error(error as HttpClientError);
     }
   }
 
@@ -102,7 +102,7 @@ export class HttpClient {
       const response: HttpClientResponse<T> = await axios.patch<T>(this.getUri(uri), payload, config);
       return this.success<T>(response);
     } catch (error) {
-      throw this.error(error);
+      throw this.error(error as HttpClientError);
     }
   }
 
@@ -117,7 +117,7 @@ export class HttpClient {
       const response: HttpClientResponse<T> = await axios.put<T>(this.getUri(uri), payload, config);
       return this.success<T>(response);
     } catch (error) {
-      throw this.error(error);
+      throw this.error(error as HttpClientError);
     }
   }
 
@@ -127,7 +127,7 @@ export class HttpClient {
       const response: HttpClientResponse<T> = await axios.delete<T>(this.getUri(uri), config);
       return this.success<T>(response);
     } catch (error) {
-      throw this.error(error);
+      throw this.error(error as HttpClientError);
     }
   }
 }
