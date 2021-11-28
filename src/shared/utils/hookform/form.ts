@@ -66,7 +66,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
   readOnlyFieldsRef.current = readOnlyFields;
 
   useLayoutEffect(() => {
-    const newFieldsName = getFieldsNameFromFieldsRef(formRef.control.fieldsRef);
+    const newFieldsName = getFieldsNameFromFieldsRef(formRef.control._fields);
     const isChanged = !isEqual(newFieldsName, fieldsNameRef.current);
     if (isChanged) {
       setFieldsName(newFieldsName);
@@ -82,7 +82,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
     const loadDisabledFieldRef = () => {
       const target = { ...disabledFields };
       for (const fieldName of fieldsNameRef.current) {
-        const elementRef = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
+        const elementRef = getCurrentHTMLElementRef(formRef.control._fields, fieldName);
         if (isLiveInDOM(elementRef)) {
           forEachFieldElement(elementRef, (el) => {
             set(target, fieldName, el.disabled);
@@ -95,7 +95,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
     const loadReadOnlyFieldRef = () => {
       const target = { ...readOnlyFields };
       for (const fieldName of fieldsNameRef.current) {
-        const elementRef = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
+        const elementRef = getCurrentHTMLElementRef(formRef.control._fields, fieldName);
         if (isLiveInDOM(elementRef)) {
           forEachFieldElement(elementRef, (el) => {
             set(target, fieldName, (el as HTMLInputElement | HTMLTextAreaElement).readOnly);
@@ -130,7 +130,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
   };
 
   const setReadOnly = (fieldName: string, value: boolean) => {
-    const ref: HTMLElement = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
+    const ref: HTMLElement = getCurrentHTMLElementRef(formRef.control._fields, fieldName);
 
     if (!ref) return;
 
@@ -147,7 +147,7 @@ export function useForm<TFieldValues extends FieldValues = FieldValues, TContext
   };
 
   const setDisable = (fieldName: string, value: boolean) => {
-    const ref: HTMLElement = getCurrentHTMLElementRef(formRef.control.fieldsRef, fieldName);
+    const ref: HTMLElement = getCurrentHTMLElementRef(formRef.control._fields, fieldName);
 
     if (!ref) return;
 

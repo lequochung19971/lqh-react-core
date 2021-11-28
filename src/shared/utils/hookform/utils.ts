@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import { useState } from 'react';
-import { Field } from 'react-hook-form';
+import { FieldRefs } from 'react-hook-form';
 
 /**
  * @decs Function that implements to flatten object by recursion.
@@ -75,7 +75,7 @@ export const isLiveInDOM = (elementRef: HTMLElement | any): boolean => {
  * @param {Partial<Record<string, Field>>}  fieldsRef
  * @param {string[]}  target  An array to save collected fieldsName
  */
-const traverseAndCollectFieldName = (currentFieldsRef: Partial<Record<string, Field>>, target: string[]) => {
+const traverseAndCollectFieldName = (currentFieldsRef: FieldRefs, target: string[]) => {
   for (const key in currentFieldsRef) {
     if (currentFieldsRef.hasOwnProperty(key)) {
       const value: any = currentFieldsRef[key];
@@ -96,10 +96,10 @@ const traverseAndCollectFieldName = (currentFieldsRef: Partial<Record<string, Fi
  * @returns {string[]}  Returns a list of fields name
  */
 export const getFieldsNameFromFieldsRef = (
-  fieldsRef: React.MutableRefObject<Partial<Record<string, Field>>>,
+  fieldsRef: FieldRefs,
 ): string[] => {
   const fieldsName: string[] = [];
-  traverseAndCollectFieldName(fieldsRef.current, fieldsName);
+  traverseAndCollectFieldName(fieldsRef, fieldsName);
   return fieldsName;
 };
 
@@ -147,7 +147,7 @@ export const forEachFieldElement = (
  * @returns {HTMLElement} Returns a html element
  */
 export const getCurrentHTMLElementRef = (
-  fieldsRef: React.MutableRefObject<Partial<Record<string, Field>>>,
+  fieldsRef: FieldRefs,
   fieldName: string,
 ): HTMLElement => {
   const pathRef = `${fieldName}._f.ref`;

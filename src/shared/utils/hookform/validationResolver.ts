@@ -352,7 +352,7 @@ export const validationResolver = <TFieldValues extends FieldValues = FieldValue
     loadValidationContext(ref, context);
     loadValidationResolverRef<TFieldValues>(ref, values as TFieldValues, configuredValidatorFns, fieldsNameRef.current);
 
-    const errors: DeepMap<TFieldValues, FieldError> = {};
+    const errors = {} as DeepMap<TFieldValues, FieldError>;
 
     if (options.names) {
       // Execute for only 1 field
