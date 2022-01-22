@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { nanoid } from '@reduxjs/toolkit';
 import { createContext } from '@shared/utils';
+import { DialogContainer } from './DialogContainer';
 import {
   CreateDialogResult,
   DialogConfig,
@@ -11,7 +12,6 @@ import {
   StateGroup,
   WrapperDialogProps,
 } from './type';
-import { DialogContainer } from './DialogContainer';
 
 export const createPromiseResolveReject = (): PromiseResolveReject => {
   const promiseCallback: { resolve: PromiseResolveReject[1] | null; reject: PromiseResolveReject[2] | null } = {
@@ -71,7 +71,10 @@ export const DialogProvider: React.FunctionComponent = (props) => {
   };
 
   const handleOpen = (id: string) => {
-    return function open<Props = any>(component: React.FunctionComponent<WrapperDialogProps<Props>>, config?: DialogConfig): DialogRef {
+    return function open<Props = any>(
+      component: React.FunctionComponent<WrapperDialogProps<Props>>,
+      config?: DialogConfig,
+    ): DialogRef {
       const [onClosePromise, onCloseResolve] = createPromiseResolveReject();
 
       loadState<Props>(id, {
@@ -136,4 +139,3 @@ export const DialogProvider: React.FunctionComponent = (props) => {
     </DialogContext.Provider>
   );
 };
-

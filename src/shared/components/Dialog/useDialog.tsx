@@ -13,7 +13,7 @@ const useDialog = () => {
     return () => {
       dialogRef.current.destroy();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return dialog;

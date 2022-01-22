@@ -14,8 +14,8 @@ const useConfirmDialog = (): UseConfirmDialogProps => {
 
   const open = (config?: any): Promise<unknown> => {
     const dialogRef = dialog.open(ConfirmDialog, {
-			props: {}
-		});
+      props: {},
+    });
     setDialogState(dialogRef);
     return dialogRef.onClose();
   };

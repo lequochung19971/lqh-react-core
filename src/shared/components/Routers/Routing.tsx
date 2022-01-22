@@ -5,7 +5,6 @@ import { renderRoutes } from './utils';
 
 interface Props {
   routes: RouteConfig<unknown>[];
-  
 }
 
 const Routing: React.FunctionComponent<Props> = (props) => {

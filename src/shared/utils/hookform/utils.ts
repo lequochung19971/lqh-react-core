@@ -95,9 +95,7 @@ const traverseAndCollectFieldName = (currentFieldsRef: FieldRefs, target: string
  * @param {React.MutableRefObject<Partial<Record<string, Field>>>}  fieldsRef
  * @returns {string[]}  Returns a list of fields name
  */
-export const getFieldsNameFromFieldsRef = (
-  fieldsRef: FieldRefs,
-): string[] => {
+export const getFieldsNameFromFieldsRef = (fieldsRef: FieldRefs): string[] => {
   const fieldsName: string[] = [];
   traverseAndCollectFieldName(fieldsRef, fieldsName);
   return fieldsName;
@@ -146,10 +144,7 @@ export const forEachFieldElement = (
  * @param {string}  fieldName
  * @returns {HTMLElement} Returns a html element
  */
-export const getCurrentHTMLElementRef = (
-  fieldsRef: FieldRefs,
-  fieldName: string,
-): HTMLElement => {
+export const getCurrentHTMLElementRef = (fieldsRef: FieldRefs, fieldName: string): HTMLElement => {
   const pathRef = `${fieldName}._f.ref`;
   const ref: HTMLElement = get(fieldsRef.current, pathRef) as unknown as HTMLElement;
   return ref;
