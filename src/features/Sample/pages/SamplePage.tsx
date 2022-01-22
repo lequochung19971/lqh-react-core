@@ -30,7 +30,10 @@ const SamplePage: React.FunctionComponent = () => {
   const [count2, setCount2] = useState(1);
 
   useEffect(() => {
-    setCount2(20);
+    setCount2(30);
+    setCount2(30);
+    setCount2(30);
+    setCount2(30);
   }, [count]);
 
   const handleOpenDialog = () => {
