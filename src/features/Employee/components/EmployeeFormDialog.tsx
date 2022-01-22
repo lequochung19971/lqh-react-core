@@ -10,7 +10,6 @@ const EmployeeFormDialog: React.FunctionComponent<DialogProps> = (props) => {
   const handleClose = () => {
     if (onClose) {
       onClose({}, 'escapeKeyDown');
-      // onClose({}, 'escapeKeyDown');
     }
   };
 
