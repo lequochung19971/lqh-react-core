@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, styled } from '@mui/material';
 import { ConfirmDialog } from '@shared/components/Dialog/ConfirmDialog/ConfirmDialog';
+import useConfirmDialog from '@shared/components/Dialog/ConfirmDialog/useConfirmDialog';
 import useDialog from '@shared/components/Dialog/useDialog';
 import { useRouterContext } from '@shared/components/Routers/RouterContext';
 import { pageLoading } from '@store/loading/slices';
 import { useDispatch } from '@store';
-import useConfirmDialog from '@shared/components/Dialog/ConfirmDialog/useConfirmDialog';
 
 const Wrapper = styled('div')({
   '& img': {
