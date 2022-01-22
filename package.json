@@ -47,8 +47,8 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "postinstall": "husky install",
-    "lint": "eslint '*/**/*.{js,jsx,ts,tsx}' --quiet --fix",
-    "prettier:format": "prettier --config .prettierrc */**/*.{js,jsx,ts,tsx,json,css,scss} --write"
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --quiet --fix",
+    "prettier:format": "prettier --config .prettierrc 'src/**/*.{js,jsx,ts,tsx}' --write"
   },
   "eslintConfig": {
     "plugins": [
@@ -79,8 +79,8 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "npm run prettier:format",
-      "npm run lint"
+      "prettier --write",
+      "eslint --fix"
     ]
   },
   "devDependencies": {
