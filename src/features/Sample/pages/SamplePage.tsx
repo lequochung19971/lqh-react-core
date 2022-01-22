@@ -31,7 +31,7 @@ const SamplePage: React.FunctionComponent = () => {
 
   useEffect(() => {
     setCount2(20);
-  }, [count]);
+  }, [count3]);
 
   const handleOpenDialog = () => {
     confirmDialog.open().then((value: any) => {
