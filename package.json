@@ -84,6 +84,8 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^16.1.0",
+    "@commitlint/config-conventional": "^16.0.0",
     "@redux-devtools/core": "^3.9.1",
     "@trivago/prettier-plugin-sort-imports": "^2.0.4",
     "@types/lodash": "^4.14.176",
