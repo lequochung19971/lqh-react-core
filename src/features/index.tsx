@@ -23,7 +23,6 @@ const Features: React.FunctionComponent = () => {
       {
         path: '/employee/detail',
         component: lazy(() => import('./Employee/pages/EmployeesDetailPage')),
-        unwrapped: true,
       },
       {
         path: '*',
