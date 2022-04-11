@@ -1,11 +1,13 @@
 import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { WrapperDialogProps } from '../type';
 
-export const ConfirmDialog: React.FunctionComponent<WrapperDialogProps<{}>> = (props) => {
+export type ConfirmDialogProps = {};
+
+export const ConfirmDialog: React.FunctionComponent<WrapperDialogProps<ConfirmDialogProps>> = (props) => {
   const { dialogRef } = props;
 
   const handleClose = (value: unknown) => {
-    dialogRef.close && dialogRef.close(value);
+    dialogRef.onClose && dialogRef.onClose({ value });
   };
 
   return (

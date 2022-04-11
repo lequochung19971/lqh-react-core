@@ -20,7 +20,7 @@ const EmployeeRouting: React.FunctionComponent = () => {
       },
       {
         path: '*',
-        redirectTo: '/page-not-foundd',
+        redirectTo: '/page-not-found',
       },
     ],
     isChildren: true,

@@ -3,11 +3,11 @@ import { useDialogContext } from './DialogContext';
 import WrapperDialog from './WrapperDialog';
 
 export const DialogContainer: React.FunctionComponent = () => {
-  const { dialogState } = useDialogContext();
+  const { dialogGroup } = useDialogContext();
 
   return (
     <>
-      {Object.entries(dialogState).map(([key, state]) => {
+      {Object.entries(dialogGroup).map(([key, state]) => {
         return (
           <React.Fragment key={key}>
             <WrapperDialog {...state} />

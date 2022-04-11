@@ -1,139 +1,160 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useRef, useState } from 'react';
 import { nanoid } from '@reduxjs/toolkit';
 import { createContext } from '@shared/utils';
 import { DialogContainer } from './DialogContainer';
 import {
   CreateDialogResult,
-  DialogConfig,
   DialogContextRef,
-  DialogRef,
   DialogState,
-  PromiseResolveReject,
-  StateGroup,
+  DialogGroup,
   WrapperDialogProps,
+  DialogConfigs,
+  DialogOnCloseArgs,
 } from './type';
-
-export const createPromiseResolveReject = (): PromiseResolveReject => {
-  const promiseCallback: { resolve: PromiseResolveReject[1] | null; reject: PromiseResolveReject[2] | null } = {
-    resolve: null,
-    reject: null,
-  };
-
-  const promise = new Promise((resolve, reject) => {
-    promiseCallback.resolve = resolve;
-    promiseCallback.reject = reject;
-  });
-  return [promise, promiseCallback.resolve, promiseCallback.reject];
-};
 
 export const [DialogContext, useDialogContext] = createContext<DialogContextRef>({} as DialogContextRef);
 
 export const DialogProvider: React.FunctionComponent = (props) => {
   const { children } = props;
-  const [state, setState] = useState<StateGroup>({});
-  const stateRef = useRef<StateGroup>({});
+  const [dialogGroup, setDialogGroup] = useState<DialogGroup>({});
+  const dialogGroupRef = useRef<DialogGroup>({});
 
-  const loadState = <Props extends any>(dialogId?: string, dialogData?: Partial<DialogState<Props>>) => {
-    if (dialogId && dialogData) {
-      stateRef.current = {
-        ...stateRef.current,
-        [dialogId]: {
-          ...((stateRef.current[dialogId] ?? {}) as DialogState),
-          ...dialogData,
-          id: dialogId,
-        },
-      };
-    }
-    setState({
-      ...stateRef.current,
-    });
-  };
-
-  const destroyStateById = (id: string) => {
-    delete stateRef.current[id];
-    loadState();
-  };
-
-  const handleClose = (id: string) => {
-    return function close(value: unknown) {
-      const currentStateRef = stateRef.current[id];
-
-      if (currentStateRef && currentStateRef?.onCloseResolve) {
-        currentStateRef.onCloseResolve(value);
+  /**
+   * This function is used to change `dialogGroup` and `dialogGroupRef`. It likes `useState` of `React`
+   */
+  const loadState = useCallback(
+    <Props extends unknown>(dialogId?: string, dialogState?: Partial<DialogState<Props>>) => {
+      if (dialogId && dialogState) {
+        dialogGroupRef.current = {
+          ...dialogGroupRef.current,
+          [dialogId]: {
+            ...(dialogGroupRef.current[dialogId] ?? {}),
+            ...dialogState,
+            id: dialogId,
+          },
+        };
       }
+      setDialogGroup({ ...dialogGroupRef.current });
+    },
+    [],
+  );
 
-      loadState(id, {
-        isOpen: false,
-        onClosePromise: undefined,
-        onCloseResolve: undefined,
-      });
+  /**
+   * This function is used to remove dialog from `dialogGroup/dialogGroupRef` by ID
+   */
+  const destroyDialogById = useCallback(
+    (id: string) => {
+      delete dialogGroupRef.current[id];
+      loadState();
+    },
+    [loadState],
+  );
+
+  /**
+   * This function to create the `close` function depend on the dialog ID.
+   * @param id The ID of current dialog
+   */
+  const createClose = useCallback(
+    (id: string) => {
+      return function close(option?: { notDestroy?: boolean }) {
+        loadState(id, {
+          isOpen: false,
+        });
+
+        if (!option?.notDestroy) {
+          destroyDialogById(id);
+        }
+      } as CreateDialogResult['close'];
+    },
+    [destroyDialogById, loadState],
+  );
+
+  /**
+   * This function to create the `open` function depend on the dialog ID.
+   *
+   * When open() is implemented => configs will be saved into dialogGroup
+   * @param id The ID of current dialog
+   */
+  const createOpen = useCallback(
+    (id: string) => {
+      return function open<ComponentProps>(
+        component: React.FunctionComponent<WrapperDialogProps<ComponentProps>>,
+        configs: any,
+      ): void {
+        loadState(id, {
+          isOpen: true,
+          // close: createClose(id),
+          component,
+          configs,
+        });
+      };
+    },
+    [loadState],
+  );
+
+  /**
+   * This function to create the `loadConfigs` function depend on the dialog ID.
+   * @param id The ID of current dialog
+   */
+  const createLoadConfigs = useCallback(
+    (id: string) => {
+      /**
+       * This function is used for loading the dialog configs.
+       *
+       * It's also used for loading when having any configs change.
+       */
+      return function loadConfigs<ComponentProps extends any>(configs: DialogConfigs<ComponentProps>) {
+        if (!id || !dialogGroupRef.current[id]) return;
+
+        const isChange = !isEqual(dialogGroupRef.current[id].configs, configs);
+
+        if (isChange) {
+          console.log('Loading Configs', id);
+          loadState(id, { configs });
+        }
+      };
+    },
+    [loadState],
+  );
+
+  const createOnClose = useCallback((id: string) => {
+    return function onClose(data?: DialogOnCloseArgs) {
+      const currentDialog = dialogGroupRef.current[id];
+
+      if (currentDialog?.configs?.dialogProps?.onClose) {
+        currentDialog.configs.dialogProps.onClose(data);
+      }
     };
-  };
+  }, []);
 
-  const handleOpen = (id: string) => {
-    return function open<Props = any>(
-      component: React.FunctionComponent<WrapperDialogProps<Props>>,
-      config?: DialogConfig,
-    ): DialogRef {
-      const [onClosePromise, onCloseResolve] = createPromiseResolveReject();
-
-      loadState<Props>(id, {
-        isOpen: true,
-        component,
-        dialogConfig: config,
-        close: handleClose(id),
-        onClosePromise: onClosePromise,
-        onCloseResolve: onCloseResolve,
-      });
-
-      return {
-        id,
-        close: stateRef.current[id].close,
-        onClose: () => stateRef.current[id].onClosePromise,
-      } as DialogRef;
-
-      /** Return using Promise */
-      // return new Promise((resolve) => {
-      //   stateRef.current = {
-      //     ...stateRef.current,
-      //     [id]: {
-      //       ...(stateRef.current[id] ?? {}),
-      //       close: handleClose(id),
-      //       onClose: resolve,
-      //     },
-      //   };
-      //   updateState();
-      // });
-    };
-  };
-
-  const handleDestroy = (id: string) => {
-    return () => {
-      destroyStateById(id);
-    };
-  };
-
-  const createDialog = (): CreateDialogResult => {
-    const id = nanoid();
+  /**
+   * This function to create dialog ID.
+   *
+   * Based on this ID to differentiate the dialogs.
+   * @returns {CreateDialogResult}
+   */
+  const createDialog = useCallback((): CreateDialogResult => {
+    const id = `Dialog-${nanoid()}`;
 
     return {
-      open: handleOpen(id),
-      // close: handleClose(id),
-      destroy: handleDestroy(id),
+      id,
+      open: createOpen(id),
+      close: createClose(id),
+      loadConfigs: createLoadConfigs(id),
+      onClose: createOnClose(id),
     };
-  };
+  }, [createClose, createLoadConfigs, createOnClose, createOpen]);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-
-  const instance = {
-    dialogState: state,
+  const value = {
+    dialogGroup,
+    setDialogGroup,
+    dialogGroupRef,
     createDialog,
   };
 
   return (
-    <DialogContext.Provider value={instance}>
+    <DialogContext.Provider value={value}>
       {children}
       <DialogContainer />
     </DialogContext.Provider>
