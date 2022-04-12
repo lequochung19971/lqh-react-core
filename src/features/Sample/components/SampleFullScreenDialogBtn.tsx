@@ -46,9 +46,12 @@ const SampleFullScreenDialogBtn: React.FunctionComponent = () => {
   );
 
   return (
-    <Button variant="outlined" onClick={handleOpen}>
-      Open full-screen dialog
-    </Button>
+    <div>
+      <p>Sample Full Screen Dialog:</p>
+      <Button variant="outlined" onClick={handleOpen}>
+        Open full-screen dialog
+      </Button>
+    </div>
   );
 };
 

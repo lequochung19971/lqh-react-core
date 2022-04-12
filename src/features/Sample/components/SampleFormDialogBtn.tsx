@@ -28,12 +28,13 @@ const SampleFormDialogBtn: React.FunctionComponent = () => {
   );
 
   return (
-    <>
+    <div>
+      <p>Sample Form Dialog</p>
       <Button variant="outlined" onClick={handleOpen}>
         Open form dialog
       </Button>
       <div>Email: {email}</div>
-    </>
+    </div>
   );
 };
 

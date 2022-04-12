@@ -36,9 +36,12 @@ const SampleNestedDialogBtn: React.FunctionComponent = () => {
   );
 
   return (
-    <Button variant="outlined" onClick={handleClick}>
-      Open Nested Dialog
-    </Button>
+    <div>
+      <p>Sample Nested Dialog: </p>
+      <Button variant="outlined" onClick={handleClick}>
+        Open Nested Dialog
+      </Button>
+    </div>
   );
 };
 

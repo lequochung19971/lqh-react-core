@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { CreateDialogResult, DialogConfigs } from '../type';
 import useDialog from '../useDialog';
 import { ConfirmDialog, ConfirmDialogProps } from './ConfirmDialog';
@@ -9,17 +10,26 @@ type UseConfirmDialogProps = {
 
 const useConfirmDialog = (): UseConfirmDialogProps => {
   const dialog = useDialog();
+  const confirmDialogRef = useRef<UseConfirmDialogProps>({} as UseConfirmDialogProps);
 
-  const open = (config: DialogConfigs<ConfirmDialogProps>) => {
-    dialog.open(ConfirmDialog, config);
+  const open = (configs: DialogConfigs<ConfirmDialogProps>) => {
+    const finalConfigs: DialogConfigs<ConfirmDialogProps> = {
+      ...configs,
+      dialogProps: {
+        // Default
+        fullWidth: true,
+        maxWidth: 'xs',
+
+        ...configs.dialogProps,
+      },
+    };
+    dialog.open(ConfirmDialog, finalConfigs);
   };
 
-  const close = dialog.close;
+  confirmDialogRef.current.open = open;
+  confirmDialogRef.current.close = dialog.close;
 
-  return {
-    open,
-    close,
-  };
+  return confirmDialogRef.current;
 };
 
 export default useConfirmDialog;
