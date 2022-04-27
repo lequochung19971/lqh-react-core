@@ -1,31 +1,16 @@
 import React, { lazy } from 'react';
-import { Routing } from '@shared/components';
-import { useRoutes } from '@shared/components/Routers/useRoutes';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 const SamplePage = lazy(() => import('./pages/SamplePage'));
 const SampleDialogPage = lazy(() => import('./pages/SampleDialogPage'));
 const SampleRouting: React.FunctionComponent = () => {
-  const [routes] = useRoutes({
-    routes: [
-      {
-        path: '/',
-        exact: true,
-        component: SamplePage,
-      },
-      {
-        path: '/dialog',
-        exact: true,
-        component: SampleDialogPage,
-      },
-      {
-        path: '*',
-        redirectTo: '/page-not-found',
-      },
-    ],
-    isChildren: true,
-  });
-
-  return <Routing routes={routes} />;
+  return (
+    <Routes>
+      <Route index element={<SamplePage />} />
+      <Route path="dialog" element={<SampleDialogPage />} />
+      <Route path="*" element={<Navigate replace to="/page-not-found" />} />
+    </Routes>
+  );
 };
 
 export default SampleRouting;

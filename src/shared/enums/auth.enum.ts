@@ -3,7 +3,7 @@ export enum TokenType {
 }
 
 export enum AuthLocalStorageKeys {
-  JWT_TOKEN = 'JWT_TOKEN',
+  ACCESS_TOKEN = 'ACCESS_TOKEN',
   REFRESH_TOKEN = 'REFRESH_TOKEN',
 }
 

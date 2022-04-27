@@ -1,32 +1,17 @@
 import React, { lazy } from 'react';
-import { Routing } from '@shared/components';
-import { useRoutes } from '@shared/components/Routers/useRoutes';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 const EmployeesPage = lazy(() => import('./pages/EmployeesPage'));
 const EmployeesDetailPage = lazy(() => import('./pages/EmployeesDetailPage'));
 
 const EmployeeRouting: React.FunctionComponent = () => {
-  const [routes] = useRoutes({
-    routes: [
-      {
-        path: '/',
-        exact: true,
-        component: EmployeesPage,
-      },
-      {
-        path: '/detail',
-        exact: true,
-        component: EmployeesDetailPage,
-      },
-      {
-        path: '*',
-        redirectTo: '/page-not-found',
-      },
-    ],
-    isChildren: true,
-  });
-
-  return <Routing routes={routes} />;
+  return (
+    <Routes>
+      <Route index element={<EmployeesPage />} />
+      <Route path="detail" element={<EmployeesDetailPage />} />
+      <Route path="*" element={<Navigate replace to="/page-not-found" />} />
+    </Routes>
+  );
 };
 
 export default EmployeeRouting;

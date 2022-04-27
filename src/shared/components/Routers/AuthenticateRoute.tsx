@@ -1,39 +1,35 @@
-import React, { useMemo } from 'react';
-import { Redirect, RedirectProps, Route } from 'react-router-dom';
-import { RouteConfig } from '@shared/types';
+import React, { ComponentType } from 'react';
+import { Navigate } from 'react-router-dom';
+import { GuardHandler, GuardHandlerResult } from '@shared/types/guard.type';
 
-const AuthenticateRoute: React.FunctionComponent<RouteConfig> = (props) => {
-  const {
-    guard: { canActive = true, redirectBackTo = '' } = {},
-    redirectTo,
-    redirectFrom,
-    redirectPush,
-    ...restProps
-  } = props;
+const checkGuards = (canActivate: GuardHandler[]) => {
+  let result = {
+    authorized: true,
+    navigateTo: '',
+  } as GuardHandlerResult;
 
-  const elements = useMemo(() => {
-    if (redirectTo) {
-      const redirect: RedirectProps = {
-        to: redirectTo,
-        from: redirectFrom,
-        push: redirectPush,
-        path: restProps.path as string,
-        exact: restProps.exact,
-        strict: restProps.strict,
-      };
-      return <Redirect {...redirect} />;
+  for (const fn of canActivate) {
+    result = fn();
+    if (!result.authorized) {
+      return result;
     }
+  }
 
-    if (canActive) {
-      return <Route {...restProps} />;
-    }
+  return result;
+};
 
-    if (!canActive) {
-      return <Redirect to={redirectBackTo || ''} />;
-    }
-  }, [canActive, redirectBackTo, redirectFrom, redirectPush, redirectTo, restProps]);
+export type AuthenticateRouteProps = { component: ComponentType } & { canActivate?: GuardHandler[] };
 
-  return <>{elements}</>;
+export const AuthenticateRoute: React.FunctionComponent<AuthenticateRouteProps> = (props) => {
+  const { component: Component, canActivate = [] } = props;
+
+  const guardsResult = checkGuards(canActivate);
+
+  return guardsResult.authorized && !guardsResult.navigateTo ? (
+    <Component />
+  ) : (
+    <Navigate to={guardsResult.navigateTo ?? ''} replace />
+  );
 };
 
 export default AuthenticateRoute;

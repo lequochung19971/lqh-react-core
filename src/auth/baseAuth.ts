@@ -29,7 +29,7 @@ export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
   setAccessToken(accessToken: string): void {
     const { authConfig } = HttpClient.httpConfig;
     localStorage.setItem(
-      authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.JWT_TOKEN,
+      authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.ACCESS_TOKEN,
       JSON.stringify(accessToken),
     );
   }
@@ -44,7 +44,7 @@ export abstract class BaseAuth implements IAuthAdapter, IChangePassword {
 
   logout(): void {
     const { authConfig } = HttpClient.httpConfig;
-    localStorage.removeItem(authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.JWT_TOKEN);
+    localStorage.removeItem(authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.ACCESS_TOKEN);
   }
 
   async register(params: IRegisterParams): Promise<any> {

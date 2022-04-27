@@ -17,7 +17,7 @@ export class JwtAuth extends BaseAuth {
   getAuthToken(): IAuthToken | undefined {
     const { httpConfig } = HttpClient;
     const accessToken =
-      localStorage.getItem(httpConfig?.authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.JWT_TOKEN) ??
+      localStorage.getItem(httpConfig?.authConfig?.authStorageKeys?.accessToken || AuthLocalStorageKeys.ACCESS_TOKEN) ??
       '';
     const refreshToken =
       localStorage.getItem(
