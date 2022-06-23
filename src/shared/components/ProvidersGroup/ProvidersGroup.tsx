@@ -2,10 +2,10 @@ import { createElement } from 'react';
 import React, { cloneElement } from 'react';
 
 export interface ProvidersGroupProps {
-  providers: any;
+  providers: React.ComponentType[];
 }
 const ProvidersGroup: React.FunctionComponent<ProvidersGroupProps> = (props) => {
-  let { children } = props;
+  const { children } = props;
 
   /* Error - Validation */
   if (!props.providers) {
@@ -25,12 +25,12 @@ const ProvidersGroup: React.FunctionComponent<ProvidersGroupProps> = (props) => 
     return <>{children}</>;
   }
 
-  props.providers.forEach((provider: any) => {
-    const providerElement = createElement(provider);
-    children = cloneElement(providerElement, props, children);
-  });
+  const res = props.providers.reduceRight((prev, currentProvider: React.ComponentType) => {
+    const providerElement = createElement(currentProvider);
+    return cloneElement(providerElement, props, prev);
+  }, children);
 
-  return <>{children}</>;
+  return <>{res}</>;
 };
 
 export default ProvidersGroup;

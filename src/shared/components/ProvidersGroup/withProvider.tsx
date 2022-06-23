@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropsWithChildren } from 'react';
 
 /**
  * @desc This HOC is used to generate a Provider Component with Props (just using if Provider Component need Props)
@@ -7,12 +7,13 @@ import React, { Component } from 'react';
  * @param {TProps} providerProps Props of Component that you want to pass into Provider Component
  * @returns {React.FunctionComponent<object>}
  */
-export const withProvider = <TProps extends object, TComponent extends typeof Component>(
-  ProviderComponent: React.FunctionComponent<TProps> | TComponent,
-  providerProps: TProps,
-): React.FunctionComponent<{}> => {
-  const ProviderItem: React.FunctionComponent = (props) => {
-    return <ProviderComponent {...(providerProps ?? ({} as TProps))}>{props.children}</ProviderComponent>;
-  };
+
+export const withProvider = <TProps extends unknown>(
+  ProviderComponent: React.ComponentType<TProps>,
+  providerProps = { children: undefined } as PropsWithChildren<TProps>,
+) => {
+  const ProviderItem: React.FunctionComponent = (props) => (
+    <ProviderComponent {...providerProps}>{props.children}</ProviderComponent>
+  );
   return ProviderItem;
 };
