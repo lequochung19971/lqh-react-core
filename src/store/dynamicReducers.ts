@@ -113,6 +113,10 @@ export function createReducerManager<
     // Add reducers
     // features/Sample.tsx
     reducerManager.add('sample', sampleReducer);
+
+    // sampleSlice.ts
+    const sampleSlice = createSlice({...})
+    export type SampleReducerType = typeof sampleSlice.reducer
  * ```
  */
 export function configureStore<
