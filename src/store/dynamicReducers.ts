@@ -17,6 +17,13 @@ type ConfigureStoreOpts<
   initialReducers: TInitial;
 };
 
+/**
+ * @author hunglq
+ * @desc
+ * - This function will generate and combine initial reducers and async reducers.
+ * - And also it will return a object including properties to manage current reducers of App.
+ * @link https://redux.js.org/usage/code-splitting
+ */
 export function createReducerManager<
   TInitial extends BaseReducers = BaseReducers,
   TAsync extends BaseReducers = BaseReducers,
@@ -79,6 +86,35 @@ export function createReducerManager<
   };
 }
 
+/**
+ * @author hunglq
+ * @desc
+ * - This function use to configure store like configureStore of redux-toolkit without `reducer` property and add more a `initialReducers` property.
+ * - The reason for omitting `reducer` property because we will use reducerManager.reduce for `reducer` property when using configureStore of RTK.
+ * @example
+ * 
+ * ```
+ *  // Configure in store.ts
+ *  // store.ts
+ *  const initialReducers = {
+      loading: loadingReducer,
+      auth: authReducer,
+    };
+
+    type InitialReducersType = typeof initialReducers;
+    type AsyncReducersType = {
+      employee: EmployeeReducerType;
+      sample: SampleReducerType;
+      user: UserReducerType;
+    };
+
+    export const { store, reducerManager } = configureStore<InitialReducersType, AsyncReducersType>({ initialReducers });
+
+    // Add reducers
+    // features/Sample.tsx
+    reducerManager.add('sample', sampleReducer);
+ * ```
+ */
 export function configureStore<
   TInitial extends BaseReducers = BaseReducers,
   TAsync extends BaseReducers = BaseReducers,
