@@ -1,6 +1,10 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-export type ApiParams<TParams = Object, TResponse = any> = (
-  params?: TParams,
-  config?: AxiosRequestConfig,
+export type FnParams<TData extends any = any> = {
+  data?: TData;
+  config?: AxiosRequestConfig;
+};
+
+export type ApiFunction<TData = Object, TResponse = any> = (
+  params?: FnParams<TData>,
 ) => Promise<AxiosResponse<TResponse>>;

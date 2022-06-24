@@ -12,7 +12,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { navigators } from '@shared/configs';
+import navigators from '@shared/configs/navigators';
 import { NavigatorConfig } from '@shared/types';
 import { Drawer, Header } from './style';
 

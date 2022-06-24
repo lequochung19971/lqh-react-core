@@ -1,11 +1,13 @@
+import Axios from '@http/axios';
 import axiosInstance from '@http/axios';
-import { ApiParams } from '@http/type';
+import { ApiFunction } from '@http/type';
 
 export type LoginParams = { email: string; password: string };
 
-const login: ApiParams<LoginParams> = async (params, config = {}) => {
+const login: ApiFunction<LoginParams> = async (params) => {
+  const { data, config = {} } = params || {};
   try {
-    const { email, password } = params || {};
+    const { email, password } = data || {};
     const response = await axiosInstance.post('/auth/login', { email, password }, config);
     localStorage.setItem('currentUser', JSON.stringify(response.data));
     return response;
@@ -14,9 +16,10 @@ const login: ApiParams<LoginParams> = async (params, config = {}) => {
   }
 };
 
-const logout: ApiParams = async (params, config = {}) => {
+const logout: ApiFunction = async (params) => {
+  const { data, config = {} } = params || {};
   try {
-    const response = await axiosInstance.post('/auth/logout', params, config);
+    const response = await axiosInstance.post('/auth/logout', data, config);
     localStorage.removeItem('currentUser');
     return response;
   } catch (error) {
@@ -24,15 +27,16 @@ const logout: ApiParams = async (params, config = {}) => {
   }
 };
 
-const refreshToken: ApiParams = async (params, config = {}) => {
+const refreshToken: ApiFunction = async (params) => {
+  const { data, config = {} } = params || {};
   try {
-    return await axiosInstance.post('/auth/refreshToken', params, config);
+    return await axiosInstance.post('/auth/refreshToken', data, config);
   } catch (error) {
     throw error;
   }
 };
 
-const getCsrfToken: ApiParams = async () => {
+const getCsrfToken: ApiFunction = async () => {
   try {
     return await axiosInstance.get('/csrfToken');
   } catch (error) {
@@ -40,12 +44,14 @@ const getCsrfToken: ApiParams = async () => {
   }
 };
 
-const getMe: ApiParams = async () => {
+const getMe: ApiFunction = async (params) => {
+  const { config = {} } = params || {};
   try {
-    const response = await axiosInstance.get('/me');
+    const response = await axiosInstance.get('/me', config);
     localStorage.setItem('currentUser', JSON.stringify(response.data));
     return response;
   } catch (error) {
+    localStorage.removeItem('currentUser');
     throw error;
   }
 };

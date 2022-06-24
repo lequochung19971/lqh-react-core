@@ -25,11 +25,7 @@ export const AuthenticateRoute: React.FunctionComponent<AuthenticateRouteProps> 
 
   const guardsResult = checkGuards(canActivate);
 
-  return guardsResult.authorized && !guardsResult.navigateTo ? (
-    <Component />
-  ) : (
-    <Navigate to={guardsResult.navigateTo ?? ''} replace />
-  );
+  return guardsResult.authorized ? <Component /> : <Navigate to={guardsResult.navigateTo ?? ''} replace />;
 };
 
 export default AuthenticateRoute;

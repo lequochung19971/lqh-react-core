@@ -15,19 +15,18 @@ const initialState = {
 
 export const login = createAsyncThunk('@auth/login', async ({ email, password }: LoginParams, thunkAPI) => {
   try {
-    const response = await auth.login({ email, password });
+    const response = await auth.login({ data: { email, password } });
     return response.data;
   } catch (error: any) {
-    console.log(error.message);
-    return thunkAPI.rejectWithValue(error.response.data);
+    return thunkAPI.rejectWithValue(error.response.data); // Will add error into payload in reject reducer.
   }
 });
 
 export const logout = createAsyncThunk('@auth/logout', async (_, thunkAPI) => {
   try {
-    return await auth.logout();
+    const response = await auth.logout();
+    return response.data;
   } catch (error: any) {
-    console.log(error.message);
     return thunkAPI.rejectWithValue(error.response.data);
   }
 });
@@ -37,7 +36,6 @@ export const getMe = createAsyncThunk('@auth/getMe', async (_, thunkAPI) => {
     const response = await auth.getMe();
     return response.data;
   } catch (error: any) {
-    console.log(error.message);
     return thunkAPI.rejectWithValue(error.response.data);
   }
 });

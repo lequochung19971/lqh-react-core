@@ -18,7 +18,7 @@ const ShellHeader: React.FunctionComponent<Props> = (props) => {
   const logout = async () => {
     try {
       await auth.logout();
-      navigate('/login', { replace: true });
+      navigate('/auth');
     } catch (error) {
       throw error;
     }

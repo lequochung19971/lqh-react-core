@@ -1,9 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { AuthLocalStorageKeys, TokenType } from '@shared/enums';
 import auth from './auth';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: process.env.REACT_API_URL,
   withCredentials: true,
 });
 
@@ -47,10 +46,8 @@ const responseError: ResponseParams[1] = async (error) => {
       return Promise.reject(error);
     }
   }
-
   if (error?.response?.status === 401) {
-    // clearToken();
-    console.log('logout');
+    await auth.logout();
   }
 
   return Promise.reject(error);
