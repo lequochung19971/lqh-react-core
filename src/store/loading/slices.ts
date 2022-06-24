@@ -6,7 +6,7 @@ const initialState = {
 };
 
 const loadingSlice = createSlice({
-  name: '@Loading',
+  name: '@loading',
   initialState,
   reducers: {
     open(state) {
@@ -18,5 +18,6 @@ const loadingSlice = createSlice({
   },
 });
 
-export const loadingReducer = loadingSlice.reducer;
+const loadingReducer = loadingSlice.reducer;
 export const pageLoading = loadingSlice.actions;
+export default loadingReducer;
