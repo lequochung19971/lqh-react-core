@@ -1,16 +1,27 @@
-import { AnyAction, combineReducers, Reducer } from 'redux';
-import { configureStore as rtkConfigureStore } from '@reduxjs/toolkit';
+import { Action, AnyAction, combineReducers, Middleware, Reducer } from 'redux';
+import { configureStore as rtkConfigureStore, ConfigureStoreOptions } from '@reduxjs/toolkit';
+import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 
 export type BaseReducers = {
   [key: string | number | symbol]: Reducer;
 };
 export type ReducerManager = ReturnType<typeof createReducerManager>;
 
+type Middlewares<S> = ReadonlyArray<Middleware<{}, S>>;
+type ConfigureStoreOpts<
+  TInitial extends BaseReducers = BaseReducers,
+  S = any,
+  A extends Action = AnyAction,
+  M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
+> = Omit<ConfigureStoreOptions<S, A, M>, 'reducer'> & {
+  initialReducers: TInitial;
+};
+
 export function createReducerManager<
-  TStatic extends BaseReducers = BaseReducers,
+  TInitial extends BaseReducers = BaseReducers,
   TAsync extends BaseReducers = BaseReducers,
->(initialReducers: TStatic) {
-  type TCurrent = TStatic & TAsync;
+>(initialReducers: TInitial) {
+  type TCurrent = TInitial & TAsync;
   // Create an object which maps keys to reducers
   const reducers: TCurrent = { ...initialReducers } as TCurrent;
 
@@ -69,13 +80,14 @@ export function createReducerManager<
 }
 
 export function configureStore<
-  TStatic extends BaseReducers = BaseReducers,
+  TInitial extends BaseReducers = BaseReducers,
   TAsync extends BaseReducers = BaseReducers,
->({ staticReducers }: { staticReducers: TStatic }) {
-  const reducerManager = createReducerManager<TStatic, TAsync>(staticReducers);
+>({ initialReducers, ...restOptions }: ConfigureStoreOpts<TInitial>) {
+  const reducerManager = createReducerManager<TInitial, TAsync>(initialReducers);
 
   // Create a store with the root reducer function being the one exposed by the manager.
   const store = rtkConfigureStore({
+    ...restOptions,
     reducer: reducerManager.reduce,
   });
 
