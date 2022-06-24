@@ -1,38 +1,31 @@
-import React, { useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import React, { lazy, useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Auth from '@features/Auth';
 import { getMe } from '@features/Auth/authSlice';
+import { isLogged } from '@features/Auth/utils';
 import { useAuthGuard } from '@guards/useAuthGuard';
 import { Shell } from '@shared/components';
 import PageNotFound from '@shared/components/PageNotFound';
 import { AuthenticateRoute } from '@shared/components/Routers/AuthenticateRoute';
-import { useDispatch } from '@store';
-import Features from '@features';
+
+const Sample = lazy(() => import('../features/Sample'));
+const Employee = lazy(() => import('../features/Employee'));
+const User = lazy(() => import('../features/User'));
 
 const AppRouting: React.FunctionComponent = () => {
   const checkAuth = useAuthGuard();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const doGetMe = async () => {
-      try {
-        await dispatch(getMe()).unwrap();
-      } catch (error) {
-        navigate('/login', { replace: true });
-      }
-    };
-    doGetMe();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
 
   return (
     <Routes>
-      <Route path="login" element={<Auth />} />
+      <Route path="auth/*" element={<Auth />} />
 
       <Route element={<AuthenticateRoute component={Shell} canActivate={[checkAuth]} />}>
-        <Route path="/*" element={<AuthenticateRoute component={Features} />} />
+        <Route index element={<Navigate replace to="sample" />} />
+        <Route path="sample/*" element={<AuthenticateRoute component={Sample} canActivate={[checkAuth]} />} />
+        <Route path="employee/*" element={<AuthenticateRoute component={Employee} canActivate={[checkAuth]} />} />
+        <Route path="user/*" element={<AuthenticateRoute component={User} canActivate={[checkAuth]} />} />
+
+        <Route path="*" element={<Navigate replace to="/page-not-found" />} />
       </Route>
 
       <Route path="page-not-found" element={<PageNotFound />} />
