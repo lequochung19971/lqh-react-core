@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 
-export type HookProps = Object;
+export type HookProps = any;
 export type CallbackHook<I extends {} = {}, P extends HookProps = HookProps> = (instance: I, props: P) => void;
 export type FnHook<I extends {} = {}, P extends HookProps = HookProps> = (props: P) => I;
 
 /**
  * @author hunglq
  * @desc This function is used to create a hook has `extends` feature like `class`.
+ * @limits Can not pass `generic` type from outside.
  * @param {CallbackHook} currentHook the current hook that you want to create
  * @param {FnHook} extendedHook the hook that you want to extend
  * @returns {(props: {}) => {}} A hook function with props.
