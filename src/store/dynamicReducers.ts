@@ -3,7 +3,7 @@
  * https://medium.com/velotio-perspectives/the-ultimate-cheat-sheet-on-splitting-dynamic-redux-reducers-322ca17d5350
  * https://redux.js.org/usage/code-splitting
  */
-import { Action, AnyAction, combineReducers, Middleware, ReducersMapObject } from 'redux';
+import { Action, AnyAction, combineReducers, Dispatch, Middleware, ReducersMapObject } from 'redux';
 import { configureStore as rtkConfigureStore, ConfigureStoreOptions } from '@reduxjs/toolkit';
 import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 
@@ -48,12 +48,13 @@ export function createReducerManager<
   let keysToRemove: (string | number | symbol)[] = [];
 
   return {
-    getReducerMap: () => reducers,
+    getReducers: () => reducers,
 
     // The root reducer function exposed by this object
     // This will be passed to the store
     reduce: (state: any, action: A) => {
       // If any reducers have been removed, clean up their state first
+      state = { ...state };
       if (keysToRemove.length > 0) {
         for (const key of keysToRemove) {
           delete state[key];
@@ -66,7 +67,12 @@ export function createReducerManager<
     },
 
     // Adds a new reducer with the specified key
-    add: (key: keyof ReducersMapObject<S, A>, reducer: ReducersMapObject<S, A>[keyof ReducersMapObject<S, A>]) => {
+    add: (
+      key: keyof ReducersMapObject<S, A>,
+      reducer: ReducersMapObject<S, A>[keyof ReducersMapObject<S, A>],
+      dispatch: Dispatch,
+    ) => {
+      console.log('Add', key, reducer);
       if (!key || reducers[key]) {
         return;
       }
@@ -74,11 +80,12 @@ export function createReducerManager<
       reducers[key] = reducer;
 
       // Generate a new combined reducer
-      combinedReducers = combineReducers<S>(reducers);
+      combinedReducers = combineReducers(reducers);
+      dispatch({ type: '@@dynamicReducers/adding' }); // dispatch a action to update the latest reducers
     },
 
     // Removes a reducer with the specified key
-    remove: (key: keyof Reducer<S, A, M>) => {
+    remove: (key: keyof Reducer<S, A, M>, dispatch: Dispatch) => {
       if (!key || !reducers[key]) {
         return;
       }
@@ -91,6 +98,7 @@ export function createReducerManager<
 
       // Generate a new combined reducer
       combinedReducers = combineReducers(reducers);
+      dispatch({ type: '@@dynamicReducers/removing' }); // dispatch a action to update the latest reducers
     },
   };
 }
@@ -123,7 +131,7 @@ export function createReducerManager<
     // Should as `{ initialReducers: CurrentReducersType; } to automatically map types for State.`
     // Add reducers
     // features/Sample.tsx
-    reducerManager.add('sample', sampleReducer);
+    reducerManager.add('sample', sampleReducer, store.dispatch);
 
     // sampleSlice.ts
     const sampleSlice = createSlice({...})
