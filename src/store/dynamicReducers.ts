@@ -1,36 +1,45 @@
-import { Action, AnyAction, combineReducers, Middleware, Reducer } from 'redux';
+/**
+ * @link
+ * https://medium.com/velotio-perspectives/the-ultimate-cheat-sheet-on-splitting-dynamic-redux-reducers-322ca17d5350
+ * https://redux.js.org/usage/code-splitting
+ */
+import { Action, AnyAction, combineReducers, Middleware, ReducersMapObject } from 'redux';
 import { configureStore as rtkConfigureStore, ConfigureStoreOptions } from '@reduxjs/toolkit';
 import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 
-export type BaseReducers = {
-  [key: string | number | symbol]: Reducer;
+export type BaseReducers<S extends any = any> = {
+  [key: string | number | symbol]: Reducer<S>;
 };
 export type ReducerManager = ReturnType<typeof createReducerManager>;
 
-type Middlewares<S> = ReadonlyArray<Middleware<{}, S>>;
-type ConfigureStoreOpts<
-  TInitial extends BaseReducers = BaseReducers,
-  S = any,
+type Reducer<
+  S extends any = any,
   A extends Action = AnyAction,
   M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
-> = Omit<ConfigureStoreOptions<S, A, M>, 'reducer'> & {
-  initialReducers: TInitial;
-};
+> = ConfigureStoreOptions<S, A, M>['reducer'];
+
+type Middlewares<S> = ReadonlyArray<Middleware<{}, S>>;
+type ConfigureStoreOpts<
+  S extends any = any,
+  A extends Action = AnyAction,
+  M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
+> = {
+  initialReducers: ReducersMapObject<S, A>;
+} & Omit<ConfigureStoreOptions<S, A, M>, 'reducer'>;
 
 /**
  * @author hunglq
  * @desc
  * - This function will generate and combine initial reducers and async reducers.
  * - And also it will return a object including properties to manage current reducers of App.
- * @link https://redux.js.org/usage/code-splitting
  */
 export function createReducerManager<
-  TInitial extends BaseReducers = BaseReducers,
-  TAsync extends BaseReducers = BaseReducers,
->(initialReducers: TInitial) {
-  type TCurrent = TInitial & TAsync;
+  S extends any = any,
+  A extends Action = AnyAction,
+  M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
+>(initialReducers: ReducersMapObject<S, A>) {
   // Create an object which maps keys to reducers
-  const reducers: TCurrent = { ...initialReducers } as TCurrent;
+  const reducers = { ...initialReducers } as ReducersMapObject<S, A>;
 
   // Create the initial combinedReducer
   let combinedReducers = combineReducers(reducers);
@@ -43,7 +52,7 @@ export function createReducerManager<
 
     // The root reducer function exposed by this object
     // This will be passed to the store
-    reduce: (state: any, action: AnyAction) => {
+    reduce: (state: any, action: A) => {
       // If any reducers have been removed, clean up their state first
       if (keysToRemove.length > 0) {
         for (const key of keysToRemove) {
@@ -57,7 +66,7 @@ export function createReducerManager<
     },
 
     // Adds a new reducer with the specified key
-    add: (key: keyof TCurrent, reducer: TCurrent[keyof TCurrent]) => {
+    add: (key: keyof ReducersMapObject<S, A>, reducer: ReducersMapObject<S, A>[keyof ReducersMapObject<S, A>]) => {
       if (!key || reducers[key]) {
         return;
       }
@@ -65,11 +74,11 @@ export function createReducerManager<
       reducers[key] = reducer;
 
       // Generate a new combined reducer
-      combinedReducers = combineReducers(reducers);
+      combinedReducers = combineReducers<S>(reducers);
     },
 
     // Removes a reducer with the specified key
-    remove: (key: keyof TCurrent) => {
+    remove: (key: keyof Reducer<S, A, M>) => {
       if (!key || !reducers[key]) {
         return;
       }
@@ -108,8 +117,10 @@ export function createReducerManager<
       user: UserReducerType;
     };
 
-    export const { store, reducerManager } = configureStore<InitialReducersType, AsyncReducersType>({ initialReducers });
+    type CurrentReducersType = typeof initialReducers & AsyncReducersType;
 
+    export const { store, reducerManager } = configureStore({ initialReducers } as { initialReducers: CurrentReducersType; }); 
+    // Should as `{ initialReducers: CurrentReducersType; } to automatically map types for State.`
     // Add reducers
     // features/Sample.tsx
     reducerManager.add('sample', sampleReducer);
@@ -120,14 +131,14 @@ export function createReducerManager<
  * ```
  */
 export function configureStore<
-  TInitial extends BaseReducers = BaseReducers,
-  TAsync extends BaseReducers = BaseReducers,
->({ initialReducers, ...restOptions }: ConfigureStoreOpts<TInitial>) {
-  const reducerManager = createReducerManager<TInitial, TAsync>(initialReducers);
+  S extends any = any,
+  A extends Action = AnyAction,
+  M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
+>({ initialReducers }: ConfigureStoreOpts<S, A, M>) {
+  const reducerManager = createReducerManager(initialReducers);
 
   // Create a store with the root reducer function being the one exposed by the manager.
   const store = rtkConfigureStore({
-    ...restOptions,
     reducer: reducerManager.reduce,
   });
 

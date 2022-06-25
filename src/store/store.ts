@@ -17,5 +17,10 @@ export type AsyncReducersType = {
   user: UserReducerType;
 };
 
-export const { store, reducerManager } = configureStore<InitialReducersType, AsyncReducersType>({ initialReducers });
+export type CurrentReducersType = typeof initialReducers & AsyncReducersType;
+
+export const { store, reducerManager } = configureStore({ initialReducers } as {
+  initialReducers: CurrentReducersType;
+});
+
 export default store;
