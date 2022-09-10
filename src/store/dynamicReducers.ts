@@ -3,20 +3,24 @@
  * https://medium.com/velotio-perspectives/the-ultimate-cheat-sheet-on-splitting-dynamic-redux-reducers-322ca17d5350
  * https://redux.js.org/usage/code-splitting
  */
-import { Action, AnyAction, combineReducers, Dispatch, Middleware, ReducersMapObject } from 'redux';
+import {
+  Action,
+  AnyAction,
+  CombinedState,
+  combineReducers,
+  Dispatch,
+  Middleware,
+  Reducer,
+  ReducersMapObject,
+} from 'redux';
 import { configureStore as rtkConfigureStore, ConfigureStoreOptions } from '@reduxjs/toolkit';
 import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 
-export type BaseReducers<S extends any = any> = {
-  [key: string | number | symbol]: Reducer<S>;
-};
-export type ReducerManager = ReturnType<typeof createReducerManager>;
-
-type Reducer<
-  S extends any = any,
-  A extends Action = AnyAction,
-  M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
-> = ConfigureStoreOptions<S, A, M>['reducer'];
+// type Reducer<
+//   S extends any = any,
+//   A extends Action = AnyAction,
+//   M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
+// > = ConfigureStoreOptions<S, A, M>['reducer'];
 
 type Middlewares<S> = ReadonlyArray<Middleware<{}, S>>;
 type ConfigureStoreOpts<
@@ -34,9 +38,9 @@ type ConfigureStoreOpts<
  * - And also it will return a object including properties to manage current reducers of App.
  */
 export function createReducerManager<
-  S extends any = any,
+  S = any,
   A extends Action = AnyAction,
-  M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
+  // M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
 >(initialReducers: ReducersMapObject<S, A>) {
   // Create an object which maps keys to reducers
   const reducers = { ...initialReducers } as ReducersMapObject<S, A>;
@@ -45,39 +49,45 @@ export function createReducerManager<
   let combinedReducers = combineReducers(reducers);
 
   // An array which is used to delete state keys when reducers are removed
-  let keysToRemove: (string | number | symbol)[] = [];
+  let keysToRemove: (keyof S)[] = [];
+
+  const reduce: Reducer<CombinedState<S>, A> = (state: CombinedState<S> | undefined, action: A) => {
+    if (!state) return combinedReducers({} as CombinedState<S>, action);
+
+    // If any reducers have been removed, clean up their state first
+    state = { ...state };
+    if (keysToRemove.length > 0) {
+      for (const key of keysToRemove) {
+        delete state[key];
+      }
+      keysToRemove = [];
+    }
+
+    // Delegate to the combined reducer
+    return combinedReducers(state, action);
+  };
 
   return {
-    getReducers: () => reducers,
-
+    reduce,
     // The root reducer function exposed by this object
     // This will be passed to the store
-    reduce: (state: any, action: A) => {
-      // If any reducers have been removed, clean up their state first
-      state = { ...state };
-      if (keysToRemove.length > 0) {
-        for (const key of keysToRemove) {
-          delete state[key];
-        }
-        keysToRemove = [];
-      }
-
-      // Delegate to the combined reducer
-      return combinedReducers(state, action);
-    },
+    getReducers: () => reducers,
 
     // Adds a new reducer with the specified key
-    add: (
-      key: keyof ReducersMapObject<S, A>,
-      reducer: ReducersMapObject<S, A>[keyof ReducersMapObject<S, A>],
-      dispatch: Dispatch,
-    ) => {
-      console.log('Add', key, reducer);
-      if (!key || reducers[key]) {
-        return;
-      }
+    add(asyncReducers: Partial<ReducersMapObject<S, A>>, dispatch: Dispatch) {
+      const keys = Object.keys(asyncReducers) as (keyof S)[];
+
+      let hasChanged = false;
+
+      keys.forEach((key) => {
+        if (asyncReducers[key] && !reducers[key]) {
+          hasChanged = true;
+          reducers[key] = asyncReducers[key] as ReducersMapObject<S, A>[keyof S];
+        }
+      });
+
+      if (!hasChanged) return;
       // Add the reducer to the reducer mapping
-      reducers[key] = reducer;
 
       // Generate a new combined reducer
       combinedReducers = combineReducers(reducers);
@@ -85,16 +95,18 @@ export function createReducerManager<
     },
 
     // Removes a reducer with the specified key
-    remove: (key: keyof Reducer<S, A, M>, dispatch: Dispatch) => {
-      if (!key || !reducers[key]) {
+    remove: (keys: (keyof S)[], dispatch: Dispatch) => {
+      if (!keys.length) {
         return;
       }
 
       // Remove it from the reducer mapping
-      delete reducers[key];
+      keys.forEach((key) => {
+        delete reducers[key];
 
-      // Add the key to the list of keys to clean up
-      keysToRemove.push(key);
+        // Add the key to the list of keys to clean up state as well.
+        keysToRemove.push(key);
+      });
 
       // Generate a new combined reducer
       combinedReducers = combineReducers(reducers);
@@ -131,7 +143,7 @@ export function createReducerManager<
     // Should as `{ initialReducers: CurrentReducersType; } to automatically map types for State.`
     // Add reducers
     // features/Sample.tsx
-    reducerManager.add('sample', sampleReducer, store.dispatch);
+    withDynamicReducer(SampleRouting, { name: 'sample', reducer: sampleReducer, clearWhenUnmount: true });
 
     // sampleSlice.ts
     const sampleSlice = createSlice({...})
@@ -141,12 +153,13 @@ export function createReducerManager<
 export function configureStore<
   S extends any = any,
   A extends Action = AnyAction,
-  M extends Middlewares<S> = [ThunkMiddlewareFor<S>],
->({ initialReducers }: ConfigureStoreOpts<S, A, M>) {
+  M extends Middlewares<CombinedState<S>> = [ThunkMiddlewareFor<CombinedState<S>>],
+>({ initialReducers, ...rest }: ConfigureStoreOpts<CombinedState<S>, A, M>) {
   const reducerManager = createReducerManager(initialReducers);
 
   // Create a store with the root reducer function being the one exposed by the manager.
   const store = rtkConfigureStore({
+    ...rest,
     reducer: reducerManager.reduce,
   });
 
