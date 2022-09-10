@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 
-export type HookProps = any;
-export type CallbackHook<I extends {} = {}, P extends HookProps = HookProps> = (instance: I, props: P) => void;
-export type FnHook<I extends {} = {}, P extends HookProps = HookProps> = (props: P) => I;
+export type HookProps = Object | undefined;
+export type CallbackHook<I extends {} = {}, P extends HookProps = HookProps> = (instance: I, props?: P) => void;
+export type FnHook<I extends {} = {}, P extends HookProps = HookProps> = (props?: P) => I;
 
 /**
  * @author hunglq
@@ -54,7 +54,7 @@ const createHook = function <I1 extends {} = {}, P extends HookProps = HookProps
   currentHook: CallbackHook<typeof extendedHook extends undefined ? I1 : I1 & I2, P>,
   extendedHook?: FnHook<I2, P>,
 ) {
-  return (props: P) => {
+  return (props?: P) => {
     type I = typeof extendedHook extends undefined ? I1 : I1 & I2;
     let instance: I = useRef({}).current as I;
     if (extendedHook) {
